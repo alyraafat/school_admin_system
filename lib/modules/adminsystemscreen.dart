@@ -2,15 +2,17 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:school_admin_system/modules/login/cubit/cubit.dart';
 import 'package:school_admin_system/shared/components.dart';
 import 'package:school_admin_system/shared/constants.dart';
 import '../cubit/cubit.dart';
 import '../cubit/states.dart';
 
 class AdminSystemScreen extends StatelessWidget {
-  var fields = ['Field 1','Field 2', 'Field 3'];
   var dateController = TextEditingController();
   var fieldController = TextEditingController();
+  String day = "";
   @override
   Widget build(BuildContext context) {
     AppCubit cubit = AppCubit.get(context);
@@ -22,7 +24,7 @@ class AdminSystemScreen extends StatelessWidget {
               backgroundColor: Colors.white,
               elevation: 0,
               title: const Text(
-                'App System',
+                'Admin System',
                 style: TextStyle(
                     color: Color(0xff388E3C),
                     fontWeight: FontWeight.bold,
@@ -35,16 +37,15 @@ class AdminSystemScreen extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
-                  const Text(
-
-                  'Name of the school',
+                   Text(
+                  '${cubit.oneSchool["name"]}',
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
-                  style: TextStyle(
-                    fontSize: 20,
+                  style: const TextStyle(
+                    fontSize: 30,
                   ),
                 ),
-                    SizedBox(height: 20,),
+                    const SizedBox(height: 20,),
                     Container(
                       height: 50,
                       child: ListView.separated(
@@ -55,18 +56,22 @@ class AdminSystemScreen extends StatelessWidget {
                             ),
                             color: (cubit.currentIndex == index)?defaultColor: Colors.grey[300] ,
                             child: defaultTextButton(
-                                text: fields[index],
+                                text: "Field ${index+1}",
                                 function: () {
                                   cubit.currentIndex = index;
                                   cubit.changeField();
+                                  if(cubit.oneSchool["calendar${cubit.currentIndex+1}"][day].length != 1) {
+                                    AppCubit.get(context).checkDateInDataBase(date: dateController.text, cityId: LoginCubit.get(context).adminModel["cityId"], schoolId: LoginCubit.get(context).adminModel["schoolId"], field: (cubit.currentIndex+1).toString(), fees: cubit.oneSchool["fees"],intervals:cubit.oneSchool["calendar${cubit.currentIndex+1}"][day]);
+                                  }
                                 },
                                 color: (cubit.currentIndex == index)?Colors.white: defaultColor ,
                             ),
                           ),
                           separatorBuilder: (context,index) => const SizedBox(width: 10,),
-                          itemCount: fields.length
+                          itemCount: cubit.oneSchool["fields"]
                       ),
                     ),
+                const SizedBox(height:15),
                 defaultFormField(
                     controller: dateController,
                     prefix: Icons.date_range,
@@ -148,90 +153,136 @@ class AdminSystemScreen extends StatelessWidget {
                             heightYearRow: 100,
                             backgroundPicker: defaultColor,
                           )).then((value) {
-                        // day = AppCubit.get(context).dateToDay(date: value.toString());
-                        // dateController.text = DateFormat.yMMMd().format(value!);
-                        // print(TimeOfDay.now().hour);
-                        // if(value==DateTime.now()&&school["calendar"][day][0]<TimeOfDay.now())
-                        //   timeTable = AppCubit.get(context).createTimeTable(startTime: TimeOfDay.now().hour+1, endTime: school["calendar"][day][1]);
-                        // else
-                        // timeTable = AppCubit.get(context).createTimeTable(startTime: school["calendar"][day][0], endTime: school["calendar"][day][1]);
-                        // if(school["calendar$currentField"][day].length != 1) {
-                        //   AppCubit.get(context).checkDateInDataBase(date: dateController.text, cityId: AppCubit.get(context).currentCity, schoolId: school["schoolId"], field: currentField.toString(), fees: school["fees"],intervals:school["calendar$currentField"][day]);
-                        // }
-                        //AppCubit.get(context).changeDate();
+                            day = AppCubit.get(context).dateToDay(date: value.toString());
+                            dateController.text = DateFormat.yMMMd().format(value!);
+                            if(cubit.oneSchool["calendar${cubit.currentIndex+1}"][day].length != 1) {
+                              AppCubit.get(context).checkDateInDataBase(date: dateController.text, cityId: LoginCubit.get(context).adminModel["cityId"], schoolId: LoginCubit.get(context).adminModel["schoolId"], field: (cubit.currentIndex+1).toString(), fees: cubit.oneSchool["fees"],intervals:cubit.oneSchool["calendar${cubit.currentIndex+1}"][day]);
+                            }
+                            AppCubit.get(context).changeDate();
                       });
-
                     }),
                     Container(
-                      color: Colors.white,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            ListView.separated(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) => Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: InkWell(
-                                    onTap: () {},
-                                    child: Column(
-                                      children: [
-                                        Text('from: to: '),
-                                        Row(
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Text('Name of User'),
-                                                Text('Mobile Phone Number'),
-                                                Text('Random Number'),
-                                                Text('Payed')
-                                              ],
-                                            ),
-                                            const Spacer(),
-                                            Container(
-                                              height: 30,
-                                              color: defaultColor,
-                                              child: MaterialButton(
-                                                onPressed: () {
-                                                  // cubit.changeNotify();
-                                                  // notify = !notify;
-                                                },
-                                                child: Row(
-                                                  children: const [
-                                                    Icon(
-                                                      Icons.call,
-                                                      color: Colors.white,
-                                                      size: 12,
-                                                    ),
-                                                    Text('Contact',
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 12
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const SizedBox(
+                                  height: 20,
                                 ),
-                                separatorBuilder: (context, index) => myDivider(),
-                                itemCount: 10),
-                          ],
-                        ),
-                      ),
-                    ),
+                                ListView.separated(
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index)
+                                    {
+                                      int from  = AppCubit.get(context).startTimes[index]["from"];
+                                      int to = AppCubit.get(context).startTimes[index]["to"];
+                                      String strFrom = formatTime(num: from);
+                                      String strTo = formatTime(num: to);
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: InkWell(
+                                          onTap: () {},
+                                          child: Column(
+                                            children: [
+                                              Text('from: $strFrom to: $strTo'),
+                                              ConditionalBuilder(
+                                                condition:cubit.userModels[index]!="",
+                                                builder: (context) {
+                                                  return Row(
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text('${cubit.userModels[index]["name"]}'),
+                                                          Text('${cubit.userModels[index]["phone"]}'),
+                                                          Text('Random Number'),
+                                                          Text('Payed')
+                                                        ],
+                                                      ),
+                                                      const Spacer(),
+                                                      Container(
+                                                        height: 30,
+                                                        color: defaultColor,
+                                                        child: MaterialButton(
+                                                          onPressed: () {
+                                                            // cubit.changeNotify();
+                                                            // notify = !notify;
+                                                          },
+                                                          child: Row(
+                                                            children: const [
+                                                              Icon(
+                                                                Icons.call,
+                                                                color: Colors.white,
+                                                                size: 12,
+                                                              ),
+                                                              Text(
+                                                                'Contact',
+                                                                style: TextStyle(
+                                                                    color: Colors.white,
+                                                                    fontSize: 12),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  );
+                                                },
+                                                fallback: (context){
+                                                  return Row(
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text('Not Booked')
+                                                        ],
+                                                      ),
+                                                      const Spacer(),
+                                                      Container(
+                                                        height: 30,
+                                                        color: Colors.red,
+                                                        child: MaterialButton(
+                                                          onPressed: () {
+                                                            // cubit.changeNotify();
+                                                            // notify = !notify;
+                                                          },
+                                                          child: Row(
+                                                            children: const [
+                                                              Icon(
+                                                                Icons.book,
+                                                                color: Colors.white,
+                                                                size: 12,
+                                                              ),
+                                                              Text(
+                                                                'Book',
+                                                                style: TextStyle(
+                                                                    color: Colors.white,
+                                                                    fontSize: 12),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  );
+                                                }
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    separatorBuilder: (context, index) => myDivider(),
+                                    itemCount: cubit.startTimes.length
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
                   ],
 
 

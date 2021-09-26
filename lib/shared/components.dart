@@ -229,6 +229,22 @@ Widget defaultFormField({
   ),
 );
 
+String formatTime({
+  required dynamic num,
+}) {
+  String strNum = "";
+  if (num > 12) {
+    strNum = "${num - 12} pm";
+  } else if (num == 0) {
+    strNum = "12 am";
+  } else if (num == 12) {
+    strNum = "12 pm";
+  } else {
+    strNum = "$num am";
+  }
+  return strNum;
+}
+
 void navigateTo(context, widget) => Navigator.push(
   context,
   MaterialPageRoute(
@@ -237,15 +253,14 @@ void navigateTo(context, widget) => Navigator.push(
 );
 
 void navigateAndFinish(
-    context,
-    widget,
+    context, widget,
     ) =>
-    Navigator.pushAndRemoveUntil(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => widget,
       ),
-          (route) {
+      result: (route) {
         return false;
       },
     );
