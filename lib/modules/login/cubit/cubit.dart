@@ -22,14 +22,20 @@ class LoginCubit extends Cubit<LoginStates> {
         .collection('school_admins')
         .get()
         .then((value) {
+          bool flag = false;
       for(int i=0;i<value.size;i++){
         if(email==value.docs[i].data()["email"]&&password==value.docs[i].data()["password"]){
           adminModel = value.docs[i].data();
-          emit(LoginSuccessState(adminModel["adminId"]));
+          flag = true;
           break;
         }
       }
-      AppCubit.get(context).getOneSchoolData(cityId: adminModel["cityId"], schoolId: adminModel["schoolId"]);
+      if(flag) {
+        emit(LoginSuccessState(adminModel["adminId"]));
+      }else{
+        String error = "Email and/or password are wrong";
+        emit(LoginErrorState(error));
+      }
     }).catchError((error){
       print(error.toString());
       emit(LoginErrorState(error));

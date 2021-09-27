@@ -16,6 +16,7 @@ class AdminSystemScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppCubit cubit = AppCubit.get(context);
+    cubit.getOneSchoolData(cityId: LoginCubit.get(context).adminModel["cityId"], schoolId: LoginCubit.get(context).adminModel["schoolId"]);
     return BlocConsumer<AppCubit, AppStates>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -68,7 +69,7 @@ class AdminSystemScreen extends StatelessWidget {
                             ),
                           ),
                           separatorBuilder: (context,index) => const SizedBox(width: 10,),
-                          itemCount: cubit.oneSchool["fields"]
+                          itemCount: cubit.oneSchool["fields"]==null?0:cubit.oneSchool["fields"]
                       ),
                     ),
                 const SizedBox(height:15),
@@ -176,8 +177,8 @@ class AdminSystemScreen extends StatelessWidget {
                                     shrinkWrap: true,
                                     itemBuilder: (context, index)
                                     {
-                                      int from  = AppCubit.get(context).startTimes[index]["from"];
-                                      int to = AppCubit.get(context).startTimes[index]["to"];
+                                      int from  = cubit.startTimes[index]["from"];
+                                      int to = cubit.startTimes[index]["to"];
                                       String strFrom = formatTime(num: from);
                                       String strTo = formatTime(num: to);
                                       return Padding(
@@ -188,7 +189,7 @@ class AdminSystemScreen extends StatelessWidget {
                                             children: [
                                               Text('from: $strFrom to: $strTo'),
                                               ConditionalBuilder(
-                                                condition:cubit.userModels[index]!="",
+                                                condition:cubit.startTimes[index]["userId"]!="",
                                                 builder: (context) {
                                                   return Row(
                                                     children: [
@@ -197,8 +198,8 @@ class AdminSystemScreen extends StatelessWidget {
                                                             CrossAxisAlignment
                                                                 .start,
                                                         children: [
-                                                          Text('${cubit.userModels[index]["name"]}'),
-                                                          Text('${cubit.userModels[index]["phone"]}'),
+                                                          Text('${cubit.startTimes[index]["userName"]}'),
+                                                          Text('${cubit.startTimes[index]["userPhone"]}'),
                                                           Text('Random Number'),
                                                           Text('Payed')
                                                         ],
@@ -247,8 +248,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                         color: Colors.red,
                                                         child: MaterialButton(
                                                           onPressed: () {
-                                                            // cubit.changeNotify();
-                                                            // notify = !notify;
+
                                                           },
                                                           child: Row(
                                                             children: const [

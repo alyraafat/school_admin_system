@@ -20,16 +20,18 @@ void main() async {
   Bloc.observer = MyBlocObserver();
   await CacheHelper.init();
   Widget startWidget;
-  adminId = CacheHelper.getData(key: 'adminId');
+  // adminId = CacheHelper.getData(key: 'adminId');
   if (adminId.isNotEmpty) {
     startWidget = AdminSystemScreen();
   } else {
     startWidget = LoginScreen();
   }
+
+
   runApp(
       MyApp(
           startWidget
-          )
+      )
   );
 }
 
@@ -53,7 +55,7 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: LoginScreen(),
+            home: startWidget,
           );
         },
       ),

@@ -105,7 +105,6 @@ class AppCubit extends Cubit<AppStates> {
   }
   var startTimes =[];
   var selected = [];
-  var userModels = [];
   void checkDateInDataBase({
     required String date,
     required String cityId,
@@ -210,7 +209,6 @@ class AppCubit extends Cubit<AppStates> {
   }){
     startTimes = [];
     selected = [];
-    userModels = [];
     emit(AppGetBookingTimeLoadingState());
     FirebaseFirestore.instance
         .collection("cities")
@@ -238,14 +236,6 @@ class AppCubit extends Cubit<AppStates> {
           selected.add(false);
         }
       });
-      for(int i=0;i<startTimes.length;i++) {
-        if(startTimes[i]["userId"] != "") {
-          getUserData(uId: startTimes[i]["userId"]);
-          userModels.add(userModel);
-        }else{
-          userModels.add("");
-        }
-      }
       emit(AppGetBookingTimeSuccessState());
     }).catchError((error) {
       print(error.toString());
