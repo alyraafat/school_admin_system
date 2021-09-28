@@ -71,14 +71,12 @@ class AppCubit extends Cubit<AppStates> {
     }else {
       month += 2;
     }
-
     String strDay = day.toString();
     String strMonth = month.toString();
     if(day<10) strDay = "0"+strDay;
     if(month<10) strMonth = "0"+strMonth;
     DateTime date = DateTime.parse("$year-$strMonth-$strDay");
     return date;
-
   }
 
   String dateToDay({
