@@ -93,6 +93,8 @@ class AdminSystemScreen extends StatelessWidget {
                       //   dateController.text =
                       //       DateFormat.yMMMd().format(value!);
                       showRoundedDatePicker(
+                          firstDate: DateTime.now(),
+                          lastDate: AppCubit.get(context).createLastDate(),
                           context: context,
                           // theme: ThemeData(primarySwatch: Colors.deepPurple),
                           styleDatePicker: MaterialRoundedDatePickerStyle(
@@ -224,30 +226,77 @@ class AdminSystemScreen extends StatelessWidget {
                                                           ],
                                                         ),
                                                         const Spacer(),
-                                                        Container(
-                                                          height: 30,
-                                                          color: defaultColor,
-                                                          child: MaterialButton(
-                                                            onPressed: () {
-                                                              // cubit.changeNotify();
-                                                              // notify = !notify;
-                                                            },
-                                                            child: Row(
-                                                              children: const [
-                                                                Icon(
-                                                                  Icons.call,
-                                                                  color: Colors.white,
-                                                                  size: 12,
-                                                                ),
-                                                                Text(
-                                                                  'Contact',
-                                                                  style: TextStyle(
+                                                        Column(
+                                                          children: [
+                                                            Container(
+                                                              height: 30,
+                                                              color: defaultColor,
+                                                              child: MaterialButton(
+                                                                onPressed: () {
+                                                                  // cubit.changeNotify();
+                                                                  // notify = !notify;
+                                                                },
+                                                                child: Row(
+                                                                  children: const [
+                                                                    Icon(
+                                                                      Icons.call,
                                                                       color: Colors.white,
-                                                                      fontSize: 12),
-                                                                )
-                                                              ],
+                                                                      size: 12,
+                                                                    ),
+                                                                    Text(
+                                                                      'Contact',
+                                                                      style: TextStyle(
+                                                                          color: Colors.white,
+                                                                          fontSize: 12),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
                                                             ),
-                                                          ),
+                                                            ConditionalBuilder(
+                                                              condition:cubit.startTimes[index]["userId"]=="booked by admin",
+                                                              builder: (context) {
+                                                                return Column(
+                                                                  children: [
+                                                                    SizedBox(height:10),
+                                                                    Container(
+                                                                      height: 30,
+                                                                      color: Colors.red,
+                                                                      child: MaterialButton(
+                                                                        onPressed: () {
+                                                                          cubit.updateBookingTimeModel(
+                                                                              cityId: LoginCubit.get(context).adminModel["cityId"],
+                                                                              schoolId: LoginCubit.get(context).adminModel["schoolId"],
+                                                                              date: dateController.text,
+                                                                              field: (cubit.currentIndex + 1).toString(),
+                                                                              from: cubit.startTimes[index]["from"].toString(),
+                                                                              data: {
+                                                                                "isBooked": false,
+                                                                                "userId": "",
+                                                                                "userPhone": "",
+                                                                                "userName": ""
+                                                                              });
+                                                                        },
+                                                                        child: Row(
+                                                                          children: const [
+                                                                            Text(
+                                                                              'Cancel',
+                                                                              style: TextStyle(
+                                                                                  color: Colors.white,
+                                                                                  fontSize: 12),
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              },
+                                                              fallback:(context){
+                                                                return Container();
+                                                              }
+                                                            ),
+                                                          ],
                                                         )
                                                       ],
                                                     );
@@ -281,7 +330,7 @@ class AdminSystemScreen extends StatelessWidget {
                                   alignment: Alignment.center,
                                   width: double.infinity,
                                   height: 40,
-                                  color: Colors.red,
+                                  color: defaultColor,
                                   child: MaterialButton(
                                     onPressed: () {
                                       if(count>0) {
@@ -292,8 +341,7 @@ class AdminSystemScreen extends StatelessWidget {
                                             child: Column(
                                               children: [
                                                 defaultFormField(
-                                                    prefix: Icons
-                                                        .people_alt_outlined,
+                                                    prefix: Icons.people_alt_outlined,
                                                     text: 'Name',
                                                     controller: nameController,
                                                     validate: (value) {
@@ -304,11 +352,9 @@ class AdminSystemScreen extends StatelessWidget {
                                                 ),
                                                 SizedBox(height: 15),
                                                 defaultFormField(
-                                                    prefix: Icons
-                                                        .phone_android_outlined,
+                                                    prefix: Icons.phone_android_outlined,
                                                     text: 'Phone',
-                                                    keyboardType: TextInputType
-                                                        .phone,
+                                                    keyboardType: TextInputType.phone,
                                                     controller: phoneController,
                                                     validate: (value) {
                                                       if (value!.isEmpty) {
@@ -338,7 +384,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                 schoolId: LoginCubit.get(context).adminModel["schoolId"],
                                                                 date: dateController.text,
                                                                 field: (cubit.currentIndex + 1).toString(),
-                                                                from: cubit.startTimes[j]["from"].toString(),
+                                                                from: from[j].toString(),
                                                                 data: {
                                                                   "isBooked": true,
                                                                   "userId": "booked by admin",
@@ -346,12 +392,6 @@ class AdminSystemScreen extends StatelessWidget {
                                                                   "userPhone": phoneController.text,
                                                                 });
                                                           }
-                                                          // cubit.getBookingTimeModel(
-                                                          //     cityId: LoginCubit.get(context).adminModel["cityId"],
-                                                          //     schoolId: LoginCubit.get(context).adminModel["schoolId"],
-                                                          //     date: dateController.text,
-                                                          //     field: (cubit.currentIndex + 1).toString()
-                                                          // );
                                                           showToast(text:"You have booked successfully",state:ToastStates.SUCCESS);
                                                           Navigator.pop(context);
                                                         }

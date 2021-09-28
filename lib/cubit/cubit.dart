@@ -57,6 +57,30 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
+  DateTime createLastDate(){
+    var dateOfToday = DateTime.now();
+    int month = dateOfToday.month;
+    int year = dateOfToday.year;
+    int day=dateOfToday.day;
+    if(month==12) {
+      month = 2;
+      year++;
+    } else if(month==11) {
+      month = 1;
+      year++;
+    }else {
+      month += 2;
+    }
+
+    String strDay = day.toString();
+    String strMonth = month.toString();
+    if(day<10) strDay = "0"+strDay;
+    if(month<10) strMonth = "0"+strMonth;
+    DateTime date = DateTime.parse("$year-$strMonth-$strDay");
+    return date;
+
+  }
+
   String dateToDay({
     required String date
   }){
@@ -170,6 +194,8 @@ class AppCubit extends Cubit<AppStates> {
         isDone: false,
         fees: fees,
         isBooked: false,
+        userPhone: '',
+        userName: '',
       );
       emit(AppCreateBookingTimeLoadingState());
       FirebaseFirestore.instance
@@ -221,27 +247,32 @@ class AppCubit extends Cubit<AppStates> {
         .doc(date)
         .collection("bookingTime")
         .orderBy("from")
-        .get()
-        .then((value) {
-      value.docs.forEach((startTime){
-        if(date==DateFormat.yMMMd().format(DateTime.now())){
-          if(TimeOfDay.now().hour>=startTime.data()["from"]){
-            updateBookingTimeModel(cityId: cityId, schoolId: schoolId, date: date, field: field, from: startTime.data()["from"].toString(), data: {
-              "isDone": true
-            });
-          }
-        }
-        if(!startTime.data()["isDone"]) {
-          startTimes.add(startTime.data());
-          selected.add(false);
-        }
-      });
-      emit(AppGetBookingTimeSuccessState());
-    }).catchError((error) {
-      print(error.toString());
-      emit(AppGetBookingTimeErrorState(error));
-    }
-    );
+        .snapshots()
+        .listen((event) {
+          startTimes = [];
+          selected = [];
+          event.docs.forEach((startTime){
+            if(date==DateFormat.yMMMd().format(DateTime.now())){
+              if(TimeOfDay.now().hour>=startTime.data()["from"]){
+                updateBookingTimeModel(cityId: cityId, schoolId: schoolId, date: date, field: field, from: startTime.data()["from"].toString(), data: {
+                  "isDone": true
+                });
+              }
+            }
+            if(!startTime.data()["isDone"]) {
+              startTimes.add(startTime.data());
+              selected.add(false);
+            }
+          });
+          emit(AppGetBookingTimeSuccessState());
+        });
+    //     .then((value) {
+    //
+    // }).catchError((error) {
+    //   print(error.toString());
+    //   emit(AppGetBookingTimeErrorState(error));
+    // }
+    // );
   }
 
   void updateBookingTimeModel({

@@ -5,6 +5,8 @@ class BookingTimeModel{
   late int fees;
   late bool isBooked;
   late bool isDone;
+  late String userName;
+  late String userPhone;
 
   BookingTimeModel({
     required this.userId,
@@ -12,7 +14,9 @@ class BookingTimeModel{
     required this.to,
     required this.fees,
     required this.isBooked,
-    required this.isDone
+    required this.isDone,
+    required this.userName,
+    required this.userPhone
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +27,8 @@ class BookingTimeModel{
       "fees": fees,
       "isBooked": isBooked,
       "isDone": isDone,
+      "userName": userName,
+      "userPhone":userPhone
     };
   }
 }
