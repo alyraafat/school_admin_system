@@ -7,6 +7,7 @@ class AppLoadingState extends AppStates {}
 class AppChangeFieldState extends AppStates {}
 
 class AppChangeDateState extends AppStates {}
+
 //Get User:
 class AppGetUserLoadingState extends AppStates {}
 
@@ -81,3 +82,7 @@ class AppUpdateBookingTimeErrorState extends AppStates
   final String error;
   AppUpdateBookingTimeErrorState(this.error);
 }
+
+// Change Row color:
+
+class AppChangeRowColorState extends AppStates {}

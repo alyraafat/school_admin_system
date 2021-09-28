@@ -276,6 +276,9 @@ class AppCubit extends Cubit<AppStates> {
   void changeDate() {
     emit(AppChangeDateState());
   }
+  void changeRowColor() {
+    emit(AppChangeRowColorState());
+  }
 
 
 

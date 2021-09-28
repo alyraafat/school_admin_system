@@ -1,8 +1,10 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:school_admin_system/modules/login/cubit/cubit.dart';
 import 'package:school_admin_system/shared/components.dart';
 import 'package:school_admin_system/shared/constants.dart';
@@ -12,7 +14,11 @@ import '../cubit/states.dart';
 class AdminSystemScreen extends StatelessWidget {
   var dateController = TextEditingController();
   var fieldController = TextEditingController();
+  var nameController = TextEditingController();
+  var phoneController = TextEditingController();
+  var formKey = GlobalKey<FormState>();
   String day = "";
+  var count = 0;
   @override
   Widget build(BuildContext context) {
     AppCubit cubit = AppCubit.get(context);
@@ -184,94 +190,85 @@ class AdminSystemScreen extends StatelessWidget {
                                       return Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: InkWell(
-                                          onTap: () {},
-                                          child: Column(
-                                            children: [
-                                              Text('from: $strFrom to: $strTo'),
-                                              ConditionalBuilder(
-                                                condition:cubit.startTimes[index]["userId"]!="",
-                                                builder: (context) {
-                                                  return Row(
-                                                    children: [
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text('${cubit.startTimes[index]["userName"]}'),
-                                                          Text('${cubit.startTimes[index]["userPhone"]}'),
-                                                          Text('Random Number'),
-                                                          Text('Payed')
-                                                        ],
-                                                      ),
-                                                      const Spacer(),
-                                                      Container(
-                                                        height: 30,
-                                                        color: defaultColor,
-                                                        child: MaterialButton(
-                                                          onPressed: () {
-                                                            // cubit.changeNotify();
-                                                            // notify = !notify;
-                                                          },
-                                                          child: Row(
-                                                            children: const [
-                                                              Icon(
-                                                                Icons.call,
-                                                                color: Colors.white,
-                                                                size: 12,
-                                                              ),
-                                                              Text(
-                                                                'Contact',
-                                                                style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontSize: 12),
-                                                              )
-                                                            ],
-                                                          ),
+                                          onTap: () {
+                                            if(!cubit.startTimes[index]["isBooked"]){
+                                              cubit.selected[index] = !cubit.selected[index];
+                                              if(cubit.selected[index]) {
+                                                count++;
+                                              } else {
+                                                count--;
+                                              }
+                                              cubit.changeRowColor();
+                                            }
+                                          },
+                                          child: Container(
+                                            color: cubit.selected[index]? defaultColor:Colors.white,
+                                            child: Column(
+                                              children: [
+                                                Text('from: $strFrom to: $strTo'),
+                                                const SizedBox(height:10),
+                                                ConditionalBuilder(
+                                                  condition:cubit.startTimes[index]["userId"]!="",
+                                                  builder: (context) {
+                                                    return Row(
+                                                      children: [
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text('${cubit.startTimes[index]["userName"]}'),
+                                                            Text('${cubit.startTimes[index]["userPhone"]}'),
+                                                            Text('Random Number'),
+                                                            Text('Payed')
+                                                          ],
                                                         ),
-                                                      )
-                                                    ],
-                                                  );
-                                                },
-                                                fallback: (context){
-                                                  return Row(
-                                                    children: [
-                                                      Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text('Not Booked')
-                                                        ],
-                                                      ),
-                                                      const Spacer(),
-                                                      Container(
-                                                        height: 30,
-                                                        color: Colors.red,
-                                                        child: MaterialButton(
-                                                          onPressed: () {
+                                                        const Spacer(),
+                                                        Container(
+                                                          height: 30,
+                                                          color: defaultColor,
+                                                          child: MaterialButton(
+                                                            onPressed: () {
+                                                              // cubit.changeNotify();
+                                                              // notify = !notify;
+                                                            },
+                                                            child: Row(
+                                                              children: const [
+                                                                Icon(
+                                                                  Icons.call,
+                                                                  color: Colors.white,
+                                                                  size: 12,
+                                                                ),
+                                                                Text(
+                                                                  'Contact',
+                                                                  style: TextStyle(
+                                                                      color: Colors.white,
+                                                                      fontSize: 12),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    );
+                                                  },
+                                                  fallback: (context){
+                                                    return Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text('Not Booked')
+                                                          ],
+                                                        ),
 
-                                                          },
-                                                          child: Row(
-                                                            children: const [
-                                                              Icon(
-                                                                Icons.book,
-                                                                color: Colors.white,
-                                                                size: 12,
-                                                              ),
-                                                              Text(
-                                                                'Book',
-                                                                style: TextStyle(
-                                                                    color: Colors.white,
-                                                                    fontSize: 12),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  );
-                                                }
-                                              ),
-                                            ],
+                                                      ],
+                                                    );
+                                                  }
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       );
@@ -279,6 +276,112 @@ class AdminSystemScreen extends StatelessWidget {
                                     separatorBuilder: (context, index) => myDivider(),
                                     itemCount: cubit.startTimes.length
                                 ),
+                                const SizedBox(height:15),
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: double.infinity,
+                                  height: 40,
+                                  color: Colors.red,
+                                  child: MaterialButton(
+                                    onPressed: () {
+                                      if(count>0) {
+                                        Alert(
+                                          context: context,
+                                          content: Form(
+                                            key: formKey,
+                                            child: Column(
+                                              children: [
+                                                defaultFormField(
+                                                    prefix: Icons
+                                                        .people_alt_outlined,
+                                                    text: 'Name',
+                                                    controller: nameController,
+                                                    validate: (value) {
+                                                      if (value!.isEmpty) {
+                                                        return "Name must not be empty";
+                                                      }
+                                                    }
+                                                ),
+                                                SizedBox(height: 15),
+                                                defaultFormField(
+                                                    prefix: Icons
+                                                        .phone_android_outlined,
+                                                    text: 'Phone',
+                                                    keyboardType: TextInputType
+                                                        .phone,
+                                                    controller: phoneController,
+                                                    validate: (value) {
+                                                      if (value!.isEmpty) {
+                                                        return "Phone must not be empty";
+                                                      }
+                                                    }
+                                                ),
+                                                SizedBox(height: 15),
+                                                Container(
+                                                  color: Colors.red,
+                                                  width: 120,
+                                                  height: 40,
+                                                  child: defaultTextButton(
+                                                      color: Colors.white,
+                                                      text: 'Book',
+                                                      function: () {
+                                                        var from = [];
+                                                        for (int i = 0; i < cubit.selected.length; i++) {
+                                                          if (cubit.selected[i]) {
+                                                            from.add(cubit.startTimes[i]["from"]);
+                                                          }
+                                                        }
+                                                        if (formKey.currentState!.validate()) {
+                                                          for (int j = 0; j < from.length; j++) {
+                                                            cubit.updateBookingTimeModel(
+                                                                cityId: LoginCubit.get(context).adminModel["cityId"],
+                                                                schoolId: LoginCubit.get(context).adminModel["schoolId"],
+                                                                date: dateController.text,
+                                                                field: (cubit.currentIndex + 1).toString(),
+                                                                from: cubit.startTimes[j]["from"].toString(),
+                                                                data: {
+                                                                  "isBooked": true,
+                                                                  "userId": "booked by admin",
+                                                                  "userName": nameController.text,
+                                                                  "userPhone": phoneController.text,
+                                                                });
+                                                          }
+                                                          // cubit.getBookingTimeModel(
+                                                          //     cityId: LoginCubit.get(context).adminModel["cityId"],
+                                                          //     schoolId: LoginCubit.get(context).adminModel["schoolId"],
+                                                          //     date: dateController.text,
+                                                          //     field: (cubit.currentIndex + 1).toString()
+                                                          // );
+                                                          showToast(text:"You have booked successfully",state:ToastStates.SUCCESS);
+                                                          Navigator.pop(context);
+                                                        }
+                                                      }
+
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          buttons: [],
+
+                                        ).show();
+                                      }
+
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: const [
+                                        Text(
+                                          'Book',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 17
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                           ),
