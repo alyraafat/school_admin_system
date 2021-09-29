@@ -7,6 +7,7 @@ class BookingTimeModel{
   late bool isDone;
   late String userName;
   late String userPhone;
+  late String randomNumber;
 
   BookingTimeModel({
     required this.userId,
@@ -16,7 +17,8 @@ class BookingTimeModel{
     required this.isBooked,
     required this.isDone,
     required this.userName,
-    required this.userPhone
+    required this.userPhone,
+    required this.randomNumber
   });
 
   Map<String, dynamic> toMap() {
@@ -28,7 +30,8 @@ class BookingTimeModel{
       "isBooked": isBooked,
       "isDone": isDone,
       "userName": userName,
-      "userPhone":userPhone
+      "userPhone":userPhone,
+      "randomNumber":randomNumber
     };
   }
 }

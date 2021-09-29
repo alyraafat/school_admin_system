@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,7 @@ class AdminSystemScreen extends StatelessWidget {
   var nameController = TextEditingController();
   var phoneController = TextEditingController();
   var formKey = GlobalKey<FormState>();
+  Random random = Random();
   String day = "";
   var count = 0;
   @override
@@ -221,7 +224,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                           children: [
                                                             Text('${cubit.startTimes[index]["userName"]}'),
                                                             Text('${cubit.startTimes[index]["userPhone"]}'),
-                                                            Text('Random Number'),
+                                                            Text('${cubit.startTimes[index]["randomNumber"]}'),
                                                             Text('Payed')
                                                           ],
                                                         ),
@@ -274,7 +277,8 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                 "isBooked": false,
                                                                                 "userId": "",
                                                                                 "userPhone": "",
-                                                                                "userName": ""
+                                                                                "userName": "",
+                                                                                "randomNumber":""
                                                                               });
                                                                         },
                                                                         child: Row(
@@ -371,6 +375,10 @@ class AdminSystemScreen extends StatelessWidget {
                                                       color: Colors.white,
                                                       text: 'Book',
                                                       function: () {
+                                                        String randomNumber = "";
+                                                        for(int j=1;j<=6;j++){
+                                                          randomNumber+="${random.nextInt(10)}";
+                                                        }
                                                         var from = [];
                                                         for (int i = 0; i < cubit.selected.length; i++) {
                                                           if (cubit.selected[i]) {
@@ -390,6 +398,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                   "userId": "booked by admin",
                                                                   "userName": nameController.text,
                                                                   "userPhone": phoneController.text,
+                                                                  "randomNumber": randomNumber
                                                                 });
                                                           }
                                                           showToast(text:"You have booked successfully",state:ToastStates.SUCCESS);

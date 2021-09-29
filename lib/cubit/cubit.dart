@@ -194,6 +194,7 @@ class AppCubit extends Cubit<AppStates> {
         isBooked: false,
         userPhone: '',
         userName: '',
+        randomNumber: '',
       );
       emit(AppCreateBookingTimeLoadingState());
       FirebaseFirestore.instance
@@ -257,10 +258,9 @@ class AppCubit extends Cubit<AppStates> {
                 });
               }
             }
-            if(!startTime.data()["isDone"]) {
               startTimes.add(startTime.data());
               selected.add(false);
-            }
+
           });
           emit(AppGetBookingTimeSuccessState());
         });
