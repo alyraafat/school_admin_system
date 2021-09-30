@@ -96,7 +96,7 @@ class AdminSystemScreen extends StatelessWidget {
                       //   dateController.text =
                       //       DateFormat.yMMMd().format(value!);
                       showRoundedDatePicker(
-                          firstDate: DateTime.now(),
+                          firstDate: AppCubit.get(context).createFirstDate(),
                           lastDate: AppCubit.get(context).createLastDate(),
                           context: context,
                           // theme: ThemeData(primarySwatch: Colors.deepPurple),
@@ -166,9 +166,15 @@ class AdminSystemScreen extends StatelessWidget {
                             backgroundPicker: defaultColor,
                           )).then((value) {
                             day = AppCubit.get(context).dateToDay(date: value.toString());
-                            dateController.text = DateFormat.yMMMd().format(value!);
+                            dateController.text = DateFormat("yyyy-MM-dd").format(value!);
                             if(cubit.oneSchool["calendar${cubit.currentIndex+1}"][day].length != 1) {
-                              AppCubit.get(context).checkDateInDataBase(date: dateController.text, cityId: LoginCubit.get(context).adminModel["cityId"], schoolId: LoginCubit.get(context).adminModel["schoolId"], field: (cubit.currentIndex+1).toString(), fees: cubit.oneSchool["fees"],intervals:cubit.oneSchool["calendar${cubit.currentIndex+1}"][day]);
+                              AppCubit.get(context).checkDateInDataBase(
+                                  date: dateController.text,
+                                  cityId: LoginCubit.get(context).adminModel["cityId"],
+                                  schoolId: LoginCubit.get(context).adminModel["schoolId"],
+                                  field: (cubit.currentIndex+1).toString(),
+                                  fees: cubit.oneSchool["fees"],
+                                  intervals:cubit.oneSchool["calendar${cubit.currentIndex+1}"][day]);
                             }
                             AppCubit.get(context).changeDate();
                       });
@@ -196,7 +202,7 @@ class AdminSystemScreen extends StatelessWidget {
                                         padding: const EdgeInsets.all(8.0),
                                         child: InkWell(
                                           onTap: () {
-                                            if(!cubit.startTimes[index]["isBooked"]){
+                                            if(!cubit.startTimes[index]["isBooked"]&&!cubit.startTimes[index]["isDone"]){
                                               cubit.selected[index] = !cubit.selected[index];
                                               if(cubit.selected[index]) {
                                                 count++;
@@ -210,7 +216,14 @@ class AdminSystemScreen extends StatelessWidget {
                                             color: cubit.selected[index]? defaultColor:Colors.white,
                                             child: Column(
                                               children: [
-                                                Text('from: $strFrom to: $strTo'),
+                                                Row(
+                                                  mainAxisAlignment:MainAxisAlignment.center,
+                                                  children: [
+                                                    Text("$day ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
+                                                    SizedBox(width:10),
+                                                    Text('from: $strFrom to: $strTo'),
+                                                  ],
+                                                ),
                                                 const SizedBox(height:10),
                                                 ConditionalBuilder(
                                                   condition:cubit.startTimes[index]["userId"]!="",
@@ -218,9 +231,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                     return Row(
                                                       children: [
                                                         Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
                                                             Text('${cubit.startTimes[index]["userName"]}'),
                                                             Text('${cubit.startTimes[index]["userPhone"]}'),
@@ -306,17 +317,33 @@ class AdminSystemScreen extends StatelessWidget {
                                                     );
                                                   },
                                                   fallback: (context){
-                                                    return Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                    return ConditionalBuilder(
+                                                      condition: !cubit.startTimes[index]["isDone"],
+                                                      builder: (context) => Row(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
-                                                            Text('Not Booked')
+                                                            Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text('Not Booked')
+                                                              ],
+                                                            ),
+
                                                           ],
                                                         ),
+                                                      fallback: (context) => Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text('Not Booked & Done')
+                                                            ],
+                                                          ),
 
-                                                      ],
+                                                        ],
+                                                      ),
+
                                                     );
                                                   }
                                                 ),
@@ -405,7 +432,6 @@ class AdminSystemScreen extends StatelessWidget {
                                                           Navigator.pop(context);
                                                         }
                                                       }
-
                                                   ),
                                                 )
                                               ],

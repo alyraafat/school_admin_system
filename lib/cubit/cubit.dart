@@ -57,6 +57,42 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
+  int compareDates({
+    required String date1, // greater:1, smaller:-1,equal:0
+    required String date2,
+  }){
+    List<String> d1 = date1.split("-");
+    List<String> d2 = date2.split("-");
+    if(date1==date2) return 0;
+    else if(int.parse(d1[0])>int.parse(d2[0])) return 1;
+    else if(int.parse(d1[0])<int.parse(d2[0])) return -1;
+    else {
+      if(int.parse(d1[1])>int.parse(d2[1])) return 1;
+      else if(int.parse(d1[1])<int.parse(d2[1])) return -1;
+      else{
+        if(int.parse(d1[2])>int.parse(d2[2])) return 1;
+        else return -1;
+      }
+    }
+  }
+  DateTime createFirstDate(){
+    var dateOfToday = DateTime.now();
+    int month = dateOfToday.month;
+    int year = dateOfToday.year;
+    int day=dateOfToday.day;
+    if(month==1) {
+      month = 12;
+      year--;
+    } else {
+      month--;
+    }
+    String strDay = day.toString();
+    String strMonth = month.toString();
+    if(day<10) strDay = "0"+strDay;
+    if(month<10) strMonth = "0"+strMonth;
+    DateTime date = DateTime.parse("$year-$strMonth-$strDay");
+    return date;
+  }
   DateTime createLastDate(){
     var dateOfToday = DateTime.now();
     int month = dateOfToday.month;
@@ -251,11 +287,29 @@ class AppCubit extends Cubit<AppStates> {
           startTimes = [];
           selected = [];
           event.docs.forEach((startTime){
-            if(date==DateFormat.yMMMd().format(DateTime.now())){
+            if(compareDates(date1:date,date2:DateFormat("yyyy-MM-dd").format(DateTime.now()))==0){
               if(TimeOfDay.now().hour>=startTime.data()["from"]){
-                updateBookingTimeModel(cityId: cityId, schoolId: schoolId, date: date, field: field, from: startTime.data()["from"].toString(), data: {
-                  "isDone": true
-                });
+                updateBookingTimeModel(
+                    cityId: cityId,
+                    schoolId: schoolId,
+                    date: date,
+                    field: field,
+                    from: startTime.data()["from"].toString(),
+                    data: {
+                      "isDone": true
+                    });
+              }
+            }else if(compareDates(date1:date,date2:DateFormat("yyyy-MM-dd").format(DateTime.now()))==-1){
+              if(!startTime.data()["isDone"]){
+                updateBookingTimeModel(
+                    cityId: cityId,
+                    schoolId: schoolId,
+                    date: date,
+                    field: field,
+                    from: startTime.data()["from"].toString(),
+                    data: {
+                      "isDone": true
+                    });
               }
             }
               startTimes.add(startTime.data());
