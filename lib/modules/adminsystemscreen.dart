@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +8,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:school_admin_system/modules/login/cubit/cubit.dart';
 import 'package:school_admin_system/shared/components.dart';
 import 'package:school_admin_system/shared/constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../cubit/cubit.dart';
 import '../cubit/states.dart';
 
@@ -19,13 +18,16 @@ class AdminSystemScreen extends StatelessWidget {
   var nameController = TextEditingController();
   var phoneController = TextEditingController();
   var formKey = GlobalKey<FormState>();
-  Random random = Random();
   String day = "";
   var count = 0;
   @override
   Widget build(BuildContext context) {
     AppCubit cubit = AppCubit.get(context);
-    cubit.getOneSchoolData(cityId: LoginCubit.get(context).adminModel["cityId"], schoolId: LoginCubit.get(context).adminModel["schoolId"]);
+    cubit.getOneSchoolData(
+        cityId: LoginCubit.get(context).adminModel["cityId"],
+        schoolId: LoginCubit.get(context).adminModel["schoolId"]
+    );
+
     return BlocConsumer<AppCubit, AppStates>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -220,7 +222,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                   mainAxisAlignment:MainAxisAlignment.center,
                                                   children: [
                                                     Text("$day ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
-                                                    SizedBox(width:10),
+                                                    const SizedBox(width:10),
                                                     Text('from: $strFrom to: $strTo'),
                                                   ],
                                                 ),
@@ -247,8 +249,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                               color: defaultColor,
                                                               child: MaterialButton(
                                                                 onPressed: () {
-                                                                  // cubit.changeNotify();
-                                                                  // notify = !notify;
+                                                                  launch("tel://${cubit.startTimes[index]["userPhone"]}");
                                                                 },
                                                                 child: Row(
                                                                   children: const [
@@ -402,10 +403,6 @@ class AdminSystemScreen extends StatelessWidget {
                                                       color: Colors.white,
                                                       text: 'Book',
                                                       function: () {
-                                                        String randomNumber = "";
-                                                        for(int j=1;j<=6;j++){
-                                                          randomNumber+="${random.nextInt(10)}";
-                                                        }
                                                         var from = [];
                                                         for (int i = 0; i < cubit.selected.length; i++) {
                                                           if (cubit.selected[i]) {
@@ -425,7 +422,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                   "userId": "booked by admin",
                                                                   "userName": nameController.text,
                                                                   "userPhone": phoneController.text,
-                                                                  "randomNumber": randomNumber
+                                                                  "randomNumber": "No random number"
                                                                 });
                                                           }
                                                           showToast(text:"You have booked successfully",state:ToastStates.SUCCESS);
@@ -455,6 +452,14 @@ class AdminSystemScreen extends StatelessWidget {
                                         )
                                       ],
                                     ),
+                                  ),
+                                ),
+                                SizedBox(height:10),
+                                Text(
+                                    "amount due: ${cubit.oneSchool["amountDue"]}",
+                                  style: TextStyle(
+                                    color:Colors.grey[600],
+                                    fontSize: 15
                                   ),
                                 )
                               ],
