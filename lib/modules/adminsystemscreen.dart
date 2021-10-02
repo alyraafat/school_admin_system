@@ -181,122 +181,92 @@ class AdminSystemScreen extends StatelessWidget {
                             AppCubit.get(context).changeDate();
                       });
                     }),
+                    SizedBox(height:10),
                     Container(
                           color: Colors.white,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                ListView.separated(
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index)
-                                    {
-                                      int from  = cubit.startTimes[index]["from"];
-                                      int to = cubit.startTimes[index]["to"];
-                                      String strFrom = formatTime(num: from);
-                                      String strTo = formatTime(num: to);
-                                      return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: InkWell(
-                                          onTap: () {
-                                            if(!cubit.startTimes[index]["isBooked"]&&!cubit.startTimes[index]["isDone"]){
-                                              cubit.selected[index] = !cubit.selected[index];
-                                              if(cubit.selected[index]) {
-                                                count++;
-                                              } else {
-                                                count--;
-                                              }
-                                              cubit.changeRowColor();
-                                            }
-                                          },
-                                          child: Container(
-                                            color: cubit.selected[index]? defaultColor:Colors.white,
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:MainAxisAlignment.center,
-                                                  children: [
-                                                    Text("$day ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
-                                                    const SizedBox(width:10),
-                                                    Text('from: $strFrom to: $strTo'),
-                                                  ],
-                                                ),
-                                                const SizedBox(height:10),
-                                                ConditionalBuilder(
-                                                  condition:cubit.startTimes[index]["userId"]!="",
-                                                  builder: (context) {
-                                                    return Row(
+                            child: ConditionalBuilder(
+                              condition: dateController.text.isNotEmpty,
+                              builder: (context) {
+                                return ConditionalBuilder(
+                                  condition: cubit.oneSchool["calendar${cubit.currentIndex+1}"][day].length != 1,
+                                  builder: (context) {
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        ListView.separated(
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemBuilder: (context, index)
+                                            {
+                                              int from  = cubit.startTimes[index]["from"];
+                                              int to = cubit.startTimes[index]["to"];
+                                              String strFrom = formatTime(num: from);
+                                              String strTo = formatTime(num: to);
+                                              return Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    if(!cubit.startTimes[index]["isBooked"]&&!cubit.startTimes[index]["isDone"]){
+                                                      cubit.selected[index] = !cubit.selected[index];
+                                                      if(cubit.selected[index]) {
+                                                        count++;
+                                                      } else {
+                                                        count--;
+                                                      }
+                                                      cubit.changeRowColor();
+                                                    }
+                                                  },
+                                                  child: Container(
+                                                    color: cubit.selected[index]? defaultColor:Colors.white,
+                                                    child: Column(
                                                       children: [
-                                                        Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                        Row(
+                                                          mainAxisAlignment:MainAxisAlignment.center,
                                                           children: [
-                                                            Text('${cubit.startTimes[index]["userName"]}'),
-                                                            Text('${cubit.startTimes[index]["userPhone"]}'),
-                                                            Text('${cubit.startTimes[index]["randomNumber"]}'),
-                                                            Text('Payed')
+                                                            Text("$day ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
+                                                            const SizedBox(width:10),
+                                                            Text('from: $strFrom to: $strTo'),
                                                           ],
                                                         ),
-                                                        const Spacer(),
-                                                        Column(
-                                                          children: [
-                                                            Container(
-                                                              height: 30,
-                                                              color: defaultColor,
-                                                              child: MaterialButton(
-                                                                onPressed: () {
-                                                                  launch("tel://${cubit.startTimes[index]["userPhone"]}");
-                                                                },
-                                                                child: Row(
-                                                                  children: const [
-                                                                    Icon(
-                                                                      Icons.call,
-                                                                      color: Colors.white,
-                                                                      size: 12,
-                                                                    ),
-                                                                    Text(
-                                                                      'Contact',
-                                                                      style: TextStyle(
-                                                                          color: Colors.white,
-                                                                          fontSize: 12),
-                                                                    )
+                                                        const SizedBox(height:10),
+                                                        ConditionalBuilder(
+                                                          condition:cubit.startTimes[index]["userId"]!="",
+                                                          builder: (context) {
+                                                            return Row(
+                                                              children: [
+                                                                Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    Text('${cubit.startTimes[index]["userName"]}'),
+                                                                    Text('${cubit.startTimes[index]["userPhone"]}'),
+                                                                    Text('${cubit.startTimes[index]["randomNumber"]}'),
+                                                                    Text('Payed')
                                                                   ],
                                                                 ),
-                                                              ),
-                                                            ),
-                                                            ConditionalBuilder(
-                                                              condition:cubit.startTimes[index]["userId"]=="booked by admin",
-                                                              builder: (context) {
-                                                                return Column(
+                                                                const Spacer(),
+                                                                Column(
                                                                   children: [
-                                                                    SizedBox(height:10),
                                                                     Container(
                                                                       height: 30,
-                                                                      color: Colors.red,
+                                                                      color: defaultColor,
                                                                       child: MaterialButton(
                                                                         onPressed: () {
-                                                                          cubit.updateBookingTimeModel(
-                                                                              cityId: LoginCubit.get(context).adminModel["cityId"],
-                                                                              schoolId: LoginCubit.get(context).adminModel["schoolId"],
-                                                                              date: dateController.text,
-                                                                              field: (cubit.currentIndex + 1).toString(),
-                                                                              from: cubit.startTimes[index]["from"].toString(),
-                                                                              data: {
-                                                                                "isBooked": false,
-                                                                                "userId": "",
-                                                                                "userPhone": "",
-                                                                                "userName": "",
-                                                                                "randomNumber":""
-                                                                              });
+                                                                          launch("tel://${cubit.startTimes[index]["userPhone"]}");
                                                                         },
                                                                         child: Row(
                                                                           children: const [
+                                                                            Icon(
+                                                                              Icons.call,
+                                                                              color: Colors.white,
+                                                                              size: 12,
+                                                                            ),
                                                                             Text(
-                                                                              'Cancel',
+                                                                              'Contact',
                                                                               style: TextStyle(
                                                                                   color: Colors.white,
                                                                                   fontSize: 12),
@@ -305,167 +275,210 @@ class AdminSystemScreen extends StatelessWidget {
                                                                         ),
                                                                       ),
                                                                     ),
+                                                                    ConditionalBuilder(
+                                                                      condition:cubit.startTimes[index]["userId"]=="booked by admin",
+                                                                      builder: (context) {
+                                                                        return Column(
+                                                                          children: [
+                                                                            SizedBox(height:10),
+                                                                            Container(
+                                                                              height: 30,
+                                                                              color: Colors.red,
+                                                                              child: MaterialButton(
+                                                                                onPressed: () {
+                                                                                  cubit.updateBookingTimeModel(
+                                                                                      cityId: LoginCubit.get(context).adminModel["cityId"],
+                                                                                      schoolId: LoginCubit.get(context).adminModel["schoolId"],
+                                                                                      date: dateController.text,
+                                                                                      field: (cubit.currentIndex + 1).toString(),
+                                                                                      from: cubit.startTimes[index]["from"].toString(),
+                                                                                      data: {
+                                                                                        "isBooked": false,
+                                                                                        "userId": "",
+                                                                                        "userPhone": "",
+                                                                                        "userName": "",
+                                                                                        "randomNumber":""
+                                                                                      });
+                                                                                },
+                                                                                child: Row(
+                                                                                  children: const [
+                                                                                    Text(
+                                                                                      'Cancel',
+                                                                                      style: TextStyle(
+                                                                                          color: Colors.white,
+                                                                                          fontSize: 12),
+                                                                                    )
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        );
+                                                                      },
+                                                                      fallback:(context){
+                                                                        return Container();
+                                                                      }
+                                                                    ),
                                                                   ],
-                                                                );
-                                                              },
-                                                              fallback:(context){
-                                                                return Container();
+                                                                )
+                                                              ],
+                                                            );
+                                                          },
+                                                          fallback: (context){
+                                                            return ConditionalBuilder(
+                                                              condition: !cubit.startTimes[index]["isDone"],
+                                                              builder: (context) => Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                    Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Text('Not Booked')
+                                                                      ],
+                                                                    ),
+
+                                                                  ],
+                                                                ),
+                                                              fallback: (context) => Row(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                children: [
+                                                                  Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: [
+                                                                      Text('Not Booked & Done')
+                                                                    ],
+                                                                  ),
+
+                                                                ],
+                                                              ),
+
+                                                            );
+                                                          }
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            separatorBuilder: (context, index) => myDivider(),
+                                            itemCount: cubit.startTimes.length
+                                        ),
+                                        const SizedBox(height:15),
+                                        Container(
+                                          alignment: Alignment.center,
+                                          width: double.infinity,
+                                          height: 40,
+                                          color: defaultColor,
+                                          child: MaterialButton(
+                                            onPressed: () {
+                                              if(count>0) {
+                                                Alert(
+                                                  context: context,
+                                                  content: Form(
+                                                    key: formKey,
+                                                    child: Column(
+                                                      children: [
+                                                        defaultFormField(
+                                                            prefix: Icons.people_alt_outlined,
+                                                            text: 'Name',
+                                                            controller: nameController,
+                                                            validate: (value) {
+                                                              if (value!.isEmpty) {
+                                                                return "Name must not be empty";
                                                               }
-                                                            ),
-                                                          ],
+                                                            }
+                                                        ),
+                                                        SizedBox(height: 15),
+                                                        defaultFormField(
+                                                            prefix: Icons.phone_android_outlined,
+                                                            text: 'Phone',
+                                                            keyboardType: TextInputType.phone,
+                                                            controller: phoneController,
+                                                            validate: (value) {
+                                                              if (value!.isEmpty) {
+                                                                return "Phone must not be empty";
+                                                              }
+                                                            }
+                                                        ),
+                                                        SizedBox(height: 15),
+                                                        Container(
+                                                          color: defaultColor,
+                                                          width: 120,
+                                                          height: 40,
+                                                          child: defaultTextButton(
+                                                              color: Colors.white,
+                                                              text: 'Book',
+                                                              function: () {
+                                                                var from = [];
+                                                                for (int i = 0; i < cubit.selected.length; i++) {
+                                                                  if (cubit.selected[i]) {
+                                                                    from.add(cubit.startTimes[i]["from"]);
+                                                                  }
+                                                                }
+                                                                if (formKey.currentState!.validate()) {
+                                                                  for (int j = 0; j < from.length; j++) {
+                                                                    cubit.updateBookingTimeModel(
+                                                                        cityId: LoginCubit.get(context).adminModel["cityId"],
+                                                                        schoolId: LoginCubit.get(context).adminModel["schoolId"],
+                                                                        date: dateController.text,
+                                                                        field: (cubit.currentIndex + 1).toString(),
+                                                                        from: from[j].toString(),
+                                                                        data: {
+                                                                          "isBooked": true,
+                                                                          "userId": "booked by admin",
+                                                                          "userName": nameController.text,
+                                                                          "userPhone": phoneController.text,
+                                                                          "randomNumber": "No random number"
+                                                                        });
+                                                                  }
+                                                                  showToast(text:"You have booked successfully",state:ToastStates.SUCCESS);
+                                                                  Navigator.pop(context);
+                                                                }
+                                                              }
+                                                          ),
                                                         )
                                                       ],
-                                                    );
-                                                  },
-                                                  fallback: (context){
-                                                    return ConditionalBuilder(
-                                                      condition: !cubit.startTimes[index]["isDone"],
-                                                      builder: (context) => Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                Text('Not Booked')
-                                                              ],
-                                                            ),
+                                                    ),
+                                                  ),
+                                                  buttons: [],
 
-                                                          ],
-                                                        ),
-                                                      fallback: (context) => Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text('Not Booked & Done')
-                                                            ],
-                                                          ),
+                                                ).show();
+                                              }
 
-                                                        ],
-                                                      ),
-
-                                                    );
-                                                  }
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    separatorBuilder: (context, index) => myDivider(),
-                                    itemCount: cubit.startTimes.length
-                                ),
-                                const SizedBox(height:15),
-                                Container(
-                                  alignment: Alignment.center,
-                                  width: double.infinity,
-                                  height: 40,
-                                  color: defaultColor,
-                                  child: MaterialButton(
-                                    onPressed: () {
-                                      if(count>0) {
-                                        Alert(
-                                          context: context,
-                                          content: Form(
-                                            key: formKey,
-                                            child: Column(
-                                              children: [
-                                                defaultFormField(
-                                                    prefix: Icons.people_alt_outlined,
-                                                    text: 'Name',
-                                                    controller: nameController,
-                                                    validate: (value) {
-                                                      if (value!.isEmpty) {
-                                                        return "Name must not be empty";
-                                                      }
-                                                    }
-                                                ),
-                                                SizedBox(height: 15),
-                                                defaultFormField(
-                                                    prefix: Icons.phone_android_outlined,
-                                                    text: 'Phone',
-                                                    keyboardType: TextInputType.phone,
-                                                    controller: phoneController,
-                                                    validate: (value) {
-                                                      if (value!.isEmpty) {
-                                                        return "Phone must not be empty";
-                                                      }
-                                                    }
-                                                ),
-                                                SizedBox(height: 15),
-                                                Container(
-                                                  color: Colors.red,
-                                                  width: 120,
-                                                  height: 40,
-                                                  child: defaultTextButton(
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: const [
+                                                Text(
+                                                  'Book',
+                                                  style: TextStyle(
                                                       color: Colors.white,
-                                                      text: 'Book',
-                                                      function: () {
-                                                        var from = [];
-                                                        for (int i = 0; i < cubit.selected.length; i++) {
-                                                          if (cubit.selected[i]) {
-                                                            from.add(cubit.startTimes[i]["from"]);
-                                                          }
-                                                        }
-                                                        if (formKey.currentState!.validate()) {
-                                                          for (int j = 0; j < from.length; j++) {
-                                                            cubit.updateBookingTimeModel(
-                                                                cityId: LoginCubit.get(context).adminModel["cityId"],
-                                                                schoolId: LoginCubit.get(context).adminModel["schoolId"],
-                                                                date: dateController.text,
-                                                                field: (cubit.currentIndex + 1).toString(),
-                                                                from: from[j].toString(),
-                                                                data: {
-                                                                  "isBooked": true,
-                                                                  "userId": "booked by admin",
-                                                                  "userName": nameController.text,
-                                                                  "userPhone": phoneController.text,
-                                                                  "randomNumber": "No random number"
-                                                                });
-                                                          }
-                                                          showToast(text:"You have booked successfully",state:ToastStates.SUCCESS);
-                                                          Navigator.pop(context);
-                                                        }
-                                                      }
+                                                      fontSize: 17
                                                   ),
                                                 )
                                               ],
                                             ),
                                           ),
-                                          buttons: [],
-
-                                        ).show();
-                                      }
-
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: const [
-                                        Text(
-                                          'Book',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 17
-                                          ),
-                                        )
+                                        ),
                                       ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height:10),
-                                Text(
-                                    "amount due: ${cubit.oneSchool["amountDue"]}",
-                                  style: TextStyle(
-                                    color:Colors.grey[600],
-                                    fontSize: 15
-                                  ),
-                                )
-                              ],
+                                    );
+                                  },
+                                  fallback: (context)=>Text("No reservations on $day ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
+                                );
+                              },
+                              fallback: (context)=>Container(),
                             ),
                           ),
-                        )
+                        ),
+                    SizedBox(height:10),
+                    Text(
+                      "amount due: ${cubit.oneSchool["amountDue"]}",
+                      style: TextStyle(
+                          color:Colors.grey[600],
+                          fontSize: 15
+                      ),
+                    )
                   ],
 
 
