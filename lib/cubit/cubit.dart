@@ -17,6 +17,21 @@ class AppCubit extends Cubit<AppStates> {
   void changeField() {
     emit(AppChangeFieldState());
   }
+  var adminModel ={};
+  void getAdminData(){
+    emit(AppGetAdminLoadingState());
+    FirebaseFirestore.instance
+        .collection('school_admins')
+        .doc(adminId)
+        .get()
+        .then((value) {
+      adminModel = value.data()!;
+      emit(AppGetAdminSuccessState());
+    }).catchError((error){
+      print(error.toString());
+      emit(AppGetAdminErrorState(error));
+    });
+  }
 
   var userModel = {};
   void getUserData({

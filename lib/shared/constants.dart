@@ -8,4 +8,4 @@ Color fourthColor = const Color(0xff80ED99);
 Color defaultColor = const Color(0xff388E3C);
 bool isBottomSheetOpen = false;
 
-var adminId = "";
+String? adminId = "";

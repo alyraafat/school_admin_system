@@ -11,7 +11,6 @@ class LoginCubit extends Cubit<LoginStates> {
   LoginCubit() : super(LoginInitialState());
 
   static LoginCubit get(context) => BlocProvider.of(context);
-  var adminModel = {};
   void userLogin({
     required String email,
     required String password,
@@ -25,13 +24,14 @@ class LoginCubit extends Cubit<LoginStates> {
           bool flag = false;
       for(int i=0;i<value.size;i++){
         if(email==value.docs[i].data()["email"]&&password==value.docs[i].data()["password"]){
-          adminModel = value.docs[i].data();
+          adminId = value.docs[i].id;
+          AppCubit.get(context).adminModel = value.docs[i].data();
           flag = true;
           break;
         }
       }
       if(flag) {
-        emit(LoginSuccessState(adminModel["adminId"]));
+        emit(LoginSuccessState(AppCubit.get(context).adminModel["adminId"]));
       }else{
         String error = "Email and/or password are wrong";
         emit(LoginErrorState(error));

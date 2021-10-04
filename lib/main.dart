@@ -7,6 +7,8 @@ import 'package:school_admin_system/modules/login/cubit/states.dart';
 import 'package:school_admin_system/modules/login/login_screen.dart';
 import 'package:school_admin_system/shared/constants.dart';
 import 'package:school_admin_system/shared/my_bloc_observer.dart';
+import 'package:school_admin_system/shared/useless%20cubit/useless_cubit.dart';
+import 'package:school_admin_system/shared/useless%20cubit/useless_states.dart';
 
 import 'Network/local/cache_helper.dart';
 import 'cubit/cubit.dart';
@@ -20,14 +22,12 @@ void main() async {
   Bloc.observer = MyBlocObserver();
   await CacheHelper.init();
   Widget startWidget;
-  // adminId = CacheHelper.getData(key: 'adminId');
-  if (adminId.isNotEmpty) {
+  adminId = CacheHelper.getData(key: 'adminId');
+  if (adminId!=""&&adminId!=null) {
     startWidget = AdminSystemScreen();
   } else {
     startWidget = LoginScreen();
   }
-
-
   runApp(
       MyApp(
           startWidget
@@ -44,13 +44,16 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-            create: (context) => AppCubit()
+            create: (context) => AppCubit()..getAdminData()
         ),
         BlocProvider(
             create: (context) => LoginCubit()
+        ),
+        BlocProvider(
+            create: (context) => UselessCubit()
         )
       ],
-      child: BlocConsumer<AppCubit, AppStates>(
+      child: BlocConsumer<UselessCubit, UselessStates>(
         listener: (context, state) {},
         builder: (context, state) {
           return MaterialApp(
