@@ -18,6 +18,16 @@ class AppGetUserErrorState extends AppStates {
   AppGetUserErrorState(this.error);
 }
 
+// Update User:
+class AppUpdateUserLoadingState extends AppStates {}
+
+class AppUpdateUserSuccessState extends AppStates {}
+
+class AppUpdateUserErrorState extends AppStates {
+  String error;
+  AppUpdateUserErrorState(this.error);
+}
+
 // Get Admin:
 class AppGetAdminLoadingState extends AppStates {}
 

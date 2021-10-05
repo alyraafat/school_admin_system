@@ -8,6 +8,10 @@ class BookingTimeModel{
   late String userName;
   late String userPhone;
   late String randomNumber;
+  late bool isDeposit;
+  late bool depositPaid;
+  late String bookingDate;
+
 
   BookingTimeModel({
     required this.userId,
@@ -18,7 +22,10 @@ class BookingTimeModel{
     required this.isDone,
     required this.userName,
     required this.userPhone,
-    required this.randomNumber
+    required this.randomNumber,
+    required this.isDeposit,
+    required this.bookingDate,
+    required this.depositPaid
   });
 
   Map<String, dynamic> toMap() {
@@ -31,7 +38,11 @@ class BookingTimeModel{
       "isDone": isDone,
       "userName": userName,
       "userPhone":userPhone,
-      "randomNumber":randomNumber
+      "randomNumber":randomNumber,
+      "isDeposit":isDeposit,
+      "bookingDate":bookingDate,
+      "depositPaid":depositPaid
+
     };
   }
 }

@@ -9,7 +9,6 @@ import 'package:school_admin_system/shared/constants.dart';
 import 'package:school_admin_system/shared/my_bloc_observer.dart';
 import 'package:school_admin_system/shared/useless%20cubit/useless_cubit.dart';
 import 'package:school_admin_system/shared/useless%20cubit/useless_states.dart';
-
 import 'Network/local/cache_helper.dart';
 import 'cubit/cubit.dart';
 import 'cubit/states.dart';
@@ -58,7 +57,11 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: startWidget,
+            home: Directionality(
+              textDirection: TextDirection.rtl,
+              child: startWidget,
+
+            )
           );
         },
       ),

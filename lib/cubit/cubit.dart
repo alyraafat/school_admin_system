@@ -51,6 +51,24 @@ class AppCubit extends Cubit<AppStates> {
     });
   }
 
+  void updateUserData({
+    required Map<String, dynamic> data,
+    required String uId
+  }){
+    emit(AppUpdateUserLoadingState());
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uId)
+        .update(data)
+        .then((value) {
+      emit(AppUpdateUserSuccessState());
+      getUserData(uId: uId);
+    }).catchError((error){
+      print(error.toString());
+      emit(AppUpdateUserErrorState(error));
+    });
+  }
+
   var oneSchool = {};
   void getOneSchoolData({
     required String cityId,
@@ -246,6 +264,9 @@ class AppCubit extends Cubit<AppStates> {
         userPhone: '',
         userName: '',
         randomNumber: '',
+        isDeposit:false,
+        bookingDate: "",
+        depositPaid: false
       );
       emit(AppCreateBookingTimeLoadingState());
       FirebaseFirestore.instance

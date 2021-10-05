@@ -260,140 +260,320 @@ class AdminSystemScreen extends StatelessWidget {
                                                         }
                                                       },
                                                       child: Container(
-                                                        color: cubit.selected[index]? defaultColor:Colors.white,
-                                                        child: Column(
-                                                          children: [
-                                                            Row(
-                                                              mainAxisAlignment:MainAxisAlignment.center,
-                                                              children: [
-                                                                Text("$day ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
-                                                                const SizedBox(width:10),
-                                                                Text('from: $strFrom to: $strTo'),
-                                                              ],
-                                                            ),
-                                                            const SizedBox(height:10),
-                                                            ConditionalBuilder(
-                                                              condition:cubit.startTimes[index]["userId"]!="",
-                                                              builder: (context) {
-                                                                return Row(
-                                                                  children: [
-                                                                    Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      children: [
-                                                                        Text('${cubit.startTimes[index]["userName"]}'),
-                                                                        Text('${cubit.startTimes[index]["userPhone"]}'),
-                                                                        Text('${cubit.startTimes[index]["randomNumber"]}'),
-                                                                        Text('Payed')
-                                                                      ],
-                                                                    ),
-                                                                    const Spacer(),
-                                                                    Column(
-                                                                      children: [
-                                                                        Container(
-                                                                          height: 30,
-                                                                          color: defaultColor,
-                                                                          child: MaterialButton(
-                                                                            onPressed: () {
-                                                                              launch("tel://${cubit.startTimes[index]["userPhone"]}");
-                                                                            },
-                                                                            child: Row(
-                                                                              children: const [
-                                                                                Icon(
-                                                                                  Icons.call,
-                                                                                  color: Colors.white,
-                                                                                  size: 12,
-                                                                                ),
-                                                                                Text(
-                                                                                  'Contact',
-                                                                                  style: TextStyle(
-                                                                                      color: Colors.white,
-                                                                                      fontSize: 12),
-                                                                                )
-                                                                              ],
+                                                        color: cubit.selected[index]? defaultColor:(cubit.startTimes[index]["isDeposit"]&&!cubit.startTimes[index]["depositPaid"])?Colors.grey[300]:Colors.white,
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: Column(
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment:MainAxisAlignment.center,
+                                                                children: [
+                                                                  Text("$day ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
+                                                                  const SizedBox(width:10),
+                                                                  Text('from: $strFrom to: $strTo'),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(height:10),
+                                                              ConditionalBuilder(
+                                                                condition:cubit.startTimes[index]["userId"]!="",
+                                                                builder: (context) {
+                                                                  return Row(
+                                                                    children: [
+                                                                      Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          Text('${cubit.startTimes[index]["userName"]}'),
+                                                                          Text('${cubit.startTimes[index]["userPhone"]}'),
+                                                                          Text('${cubit.startTimes[index]["randomNumber"]}'),
+                                                                          Text(DateFormat.yMMMd().format(DateTime.parse(dateController.text))),
+                                                                        ],
+                                                                      ),
+                                                                      const Spacer(),
+                                                                      Column(
+                                                                        children: [
+                                                                          Container(
+                                                                            height: 30,
+                                                                            color: defaultColor,
+                                                                            child: MaterialButton(
+                                                                              onPressed: () {
+                                                                                launch("tel://${cubit.startTimes[index]["userPhone"]}");
+                                                                              },
+                                                                              child: Row(
+                                                                                children: const [
+                                                                                  Icon(
+                                                                                    Icons.call,
+                                                                                    color: Colors.white,
+                                                                                    size: 12,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    'Contact',
+                                                                                    style: TextStyle(
+                                                                                        color: Colors.white,
+                                                                                        fontSize: 12),
+                                                                                  )
+                                                                                ],
+                                                                              ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                        ConditionalBuilder(
-                                                                          condition:cubit.startTimes[index]["userId"]=="booked by admin",
-                                                                          builder: (context) {
-                                                                            return Column(
-                                                                              children: [
-                                                                                SizedBox(height:10),
-                                                                                Container(
-                                                                                  height: 30,
-                                                                                  color: Colors.red,
-                                                                                  child: MaterialButton(
-                                                                                    onPressed: () {
-                                                                                      cubit.updateBookingTimeModel(
-                                                                                          cityId:cubit.adminModel["cityId"],
-                                                                                          schoolId: cubit.adminModel["schoolId"],
-                                                                                          date: dateController.text,
-                                                                                          field: (cubit.currentIndex + 1).toString(),
-                                                                                          from: cubit.startTimes[index]["from"].toString(),
-                                                                                          data: {
-                                                                                            "isBooked": false,
-                                                                                            "userId": "",
-                                                                                            "userPhone": "",
-                                                                                            "userName": "",
-                                                                                            "randomNumber":""
-                                                                                          });
-                                                                                    },
-                                                                                    child: Row(
-                                                                                      children: const [
-                                                                                        Text(
-                                                                                          'Cancel',
-                                                                                          style: TextStyle(
-                                                                                              color: Colors.white,
-                                                                                              fontSize: 12),
-                                                                                        )
-                                                                                      ],
+                                                                          ConditionalBuilder(
+                                                                            condition:cubit.startTimes[index]["userId"]=="booked by admin",
+                                                                            builder: (context) {
+                                                                              return Column(
+                                                                                children: [
+                                                                                  const SizedBox(height:10),
+                                                                                  Container(
+                                                                                    height: 30,
+                                                                                    color: Colors.red,
+                                                                                    child: MaterialButton(
+                                                                                      onPressed: () {
+                                                                                        Alert(
+                                                                                            context: context,
+                                                                                          content:Column(
+                                                                                            children: [
+                                                                                              const Text("Are you sure you want to cancel?"),
+                                                                                              const SizedBox(height:10),
+                                                                                              Container(
+                                                                                                height:40,
+                                                                                                width: 100,
+                                                                                                color: Colors.red,
+                                                                                                child: MaterialButton(
+                                                                                                  onPressed: () {
+                                                                                                    cubit.updateBookingTimeModel(
+                                                                                                        cityId:cubit.adminModel["cityId"],
+                                                                                                        schoolId: cubit.adminModel["schoolId"],
+                                                                                                        date: dateController.text,
+                                                                                                        field: (cubit.currentIndex + 1).toString(),
+                                                                                                        from: cubit.startTimes[index]["from"].toString(),
+                                                                                                        data: {
+                                                                                                          "isBooked": false,
+                                                                                                          "userId": "",
+                                                                                                          "userPhone": "",
+                                                                                                          "userName": "",
+                                                                                                          "randomNumber":"",
+                                                                                                          "isDeposit":false,
+                                                                                                          "depositPaid":false,
+                                                                                                          "bookingDate":""
+                                                                                                        });
+                                                                                                    Navigator.pop(context);
+                                                                                                  },
+                                                                                                  child: const Text(
+                                                                                                    "Cancel",
+                                                                                                    style: TextStyle(
+                                                                                                      color: Colors.white
+                                                                                                    ),
+                                                                                                  ),
+
+                                                                                                ),
+                                                                                              )
+                                                                                            ],
+                                                                                          ),
+                                                                                          buttons: []
+
+                                                                                        ).show();
+                                                                                      },
+                                                                                      child: Row(
+                                                                                        children: const [
+                                                                                          Text(
+                                                                                            'Cancel',
+                                                                                            style: TextStyle(
+                                                                                                color: Colors.white,
+                                                                                                fontSize: 12
+                                                                                            ),
+                                                                                          )
+                                                                                        ],
+                                                                                      ),
                                                                                     ),
                                                                                   ),
-                                                                                ),
-                                                                              ],
-                                                                            );
-                                                                          },
-                                                                          fallback:(context){
-                                                                            return Container();
-                                                                          }
-                                                                        ),
-                                                                      ],
-                                                                    )
-                                                                  ],
-                                                                );
-                                                              },
-                                                              fallback: (context){
-                                                                return ConditionalBuilder(
-                                                                  condition: !cubit.startTimes[index]["isDone"],
-                                                                  builder: (context) => Row(
+                                                                                ],
+                                                                              );
+                                                                            },
+                                                                            fallback:(context)=>ConditionalBuilder(
+                                                                              condition: cubit.startTimes[index]["isDeposit"]&&!cubit.startTimes[index]["depositPaid"],
+                                                                              builder: (context)=>Column(
+                                                                                children: [
+                                                                                  const SizedBox(height:10),
+                                                                                  Container(
+                                                                                    height: 30,
+                                                                                    color: defaultColor,
+                                                                                    child: MaterialButton(
+                                                                                      onPressed: () {
+                                                                                        Alert(
+                                                                                            context: context,
+                                                                                            content:Column(
+                                                                                              children: [
+                                                                                                const Text(""),
+                                                                                                const SizedBox(height:10),
+                                                                                                Container(
+                                                                                                  height:40,
+                                                                                                  width: 100,
+                                                                                                  color: defaultColor,
+                                                                                                  child: MaterialButton(
+                                                                                                    onPressed: () {
+                                                                                                      cubit.updateBookingTimeModel(
+                                                                                                          cityId:cubit.adminModel["cityId"],
+                                                                                                          schoolId: cubit.adminModel["schoolId"],
+                                                                                                          date: dateController.text,
+                                                                                                          field: (cubit.currentIndex + 1).toString(),
+                                                                                                          from: cubit.startTimes[index]["from"].toString(),
+                                                                                                          data: {
+                                                                                                            "depositPaid":true
+                                                                                                          });
+                                                                                                      Navigator.pop(context);
+                                                                                                    },
+                                                                                                    child: const Text(
+                                                                                                      "Ok",
+                                                                                                      style: TextStyle(
+                                                                                                          color: Colors.white
+                                                                                                      ),
+                                                                                                    ),
+
+                                                                                                  ),
+                                                                                                )
+                                                                                              ],
+                                                                                            ),
+                                                                                            buttons: []
+                                                                                        ).show();
+
+                                                                                      },
+                                                                                      child: Row(
+                                                                                        children: const [
+                                                                                          Text(
+                                                                                            'Pay',
+                                                                                            style: TextStyle(
+                                                                                                color: Colors.white,
+                                                                                                fontSize: 12
+                                                                                            ),
+                                                                                          )
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                  const SizedBox(height:10),
+                                                                                  Container(
+                                                                                    height: 30,
+                                                                                    color: Colors.red,
+                                                                                    child: MaterialButton(
+                                                                                      onPressed: () {
+                                                                                        cubit.getUserData(uId: cubit.startTimes[index]["userId"]);
+                                                                                        Alert(
+                                                                                            context: context,
+                                                                                            content:Column(
+                                                                                              children: [
+                                                                                                const Text("Are you sure you want to cancel?"),
+                                                                                                const SizedBox(height:10),
+                                                                                                Container(
+                                                                                                  height:40,
+                                                                                                  width: 100,
+                                                                                                  color: Colors.red,
+                                                                                                  child: MaterialButton(
+                                                                                                    onPressed: () {
+                                                                                                      cubit.updateBookingTimeModel(
+                                                                                                          cityId:cubit.adminModel["cityId"],
+                                                                                                          schoolId: cubit.adminModel["schoolId"],
+                                                                                                          date: dateController.text,
+                                                                                                          field: (cubit.currentIndex + 1).toString(),
+                                                                                                          from: cubit.startTimes[index]["from"].toString(),
+                                                                                                          data: {
+                                                                                                            "isBooked": false,
+                                                                                                            "userId": "",
+                                                                                                            "userPhone": "",
+                                                                                                            "userName": "",
+                                                                                                            "randomNumber":"",
+                                                                                                            "isDeposit":false,
+                                                                                                            "depositPaid":false,
+                                                                                                            "bookingDate":""
+                                                                                                          }
+                                                                                                      );
+                                                                                                      for(int i=0;i<cubit.userModel["mala3eb"].length;i++){
+                                                                                                        if(
+                                                                                                            cubit.adminModel["schoolId"]==cubit.userModel["mala3eb"][i]["schoolId"]
+                                                                                                            &&cubit.adminModel["cityId"]==cubit.userModel["mala3eb"][i]["city"]
+                                                                                                            &&dateController.text==cubit.userModel["mala3eb"][i]["date"]
+                                                                                                        ){
+                                                                                                          cubit.userModel["mala3eb"].removeAt(i);
+                                                                                                          cubit.userModel["count"]--;
+                                                                                                          cubit.updateUserData(
+                                                                                                              data: {
+                                                                                                                "mala3eb":cubit.userModel["mala3eb"],
+                                                                                                                "count":cubit.userModel["count"]
+                                                                                                              },
+                                                                                                              uId: cubit.startTimes[index]["userId"]
+                                                                                                          );
+                                                                                                          break;
+                                                                                                        }
+                                                                                                      }
+                                                                                                      Navigator.pop(context);
+                                                                                                    },
+                                                                                                    child: const Text(
+                                                                                                      "Cancel",
+                                                                                                      style: TextStyle(
+                                                                                                          color: Colors.white
+                                                                                                      ),
+                                                                                                    ),
+
+                                                                                                  ),
+                                                                                                )
+                                                                                              ],
+                                                                                            ),
+                                                                                            buttons: []
+
+                                                                                        ).show();
+                                                                                      },
+                                                                                      child: Row(
+                                                                                        children: const [
+                                                                                          Text(
+                                                                                            'Cancel',
+                                                                                            style: TextStyle(
+                                                                                                color: Colors.white,
+                                                                                                fontSize: 12),
+                                                                                          )
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              fallback: (context)=>Container(),
+                                                                            )
+                                                                          ),
+                                                                        ],
+                                                                      )
+                                                                    ],
+                                                                  );
+                                                                },
+                                                                fallback: (context){
+                                                                  return ConditionalBuilder(
+                                                                    condition: !cubit.startTimes[index]["isDone"],
+                                                                    builder: (context) => Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                        children: [
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Text('Not Booked')
+                                                                            ],
+                                                                          ),
+
+                                                                        ],
+                                                                      ),
+                                                                    fallback: (context) => Row(
                                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                                       children: [
                                                                         Column(
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                                           children: [
-                                                                            Text('Not Booked')
+                                                                            Text('Not Booked & Done')
                                                                           ],
                                                                         ),
 
                                                                       ],
                                                                     ),
-                                                                  fallback: (context) => Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                    children: [
-                                                                      Column(
-                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                        children: [
-                                                                          Text('Not Booked & Done')
-                                                                        ],
-                                                                      ),
 
-                                                                    ],
-                                                                  ),
-
-                                                                );
-                                                              }
-                                                            ),
-                                                          ],
+                                                                  );
+                                                                }
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -427,7 +607,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                   }
                                                                 }
                                                             ),
-                                                            SizedBox(height: 15),
+                                                            const SizedBox(height: 15),
                                                             defaultFormField(
                                                                 prefix: Icons.phone_android_outlined,
                                                                 text: 'Phone',
@@ -439,7 +619,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                   }
                                                                 }
                                                             ),
-                                                            SizedBox(height: 15),
+                                                            const SizedBox(height: 15),
                                                             Container(
                                                               color: defaultColor,
                                                               width: 120,
@@ -467,7 +647,10 @@ class AdminSystemScreen extends StatelessWidget {
                                                                               "userId": "booked by admin",
                                                                               "userName": nameController.text,
                                                                               "userPhone": phoneController.text,
-                                                                              "randomNumber": "No random number"
+                                                                              "randomNumber": "No random number",
+                                                                              "isDeposit":false,
+                                                                              "depositPaid":false,
+                                                                              "bookingDate":DateFormat("yyyy-MM-dd").format(DateTime.now())
                                                                             });
                                                                       }
                                                                       showToast(text:"You have booked successfully",state:ToastStates.SUCCESS);
