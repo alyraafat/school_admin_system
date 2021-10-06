@@ -148,6 +148,21 @@ class AppCubit extends Cubit<AppStates> {
     return date;
   }
 
+  String dayInArabic({
+    required String day
+  }){
+    String dayInArabic = "";
+    switch(day){
+      case "Monday": dayInArabic = "الاثنين";break;
+      case "Tuesday": dayInArabic = "الثلاثاء";break;
+      case "Wednesday": dayInArabic = "الأربعاء";break;
+      case "Thursday": dayInArabic = "الخميس";break;
+      case "Friday": dayInArabic = "الجمعة";break;
+      case "Saturday": dayInArabic = "السبت";break;
+      case "Sunday": dayInArabic = "الأحد";break;
+    }
+    return dayInArabic;
+  }
   String dateToDay({
     required String date
   }){

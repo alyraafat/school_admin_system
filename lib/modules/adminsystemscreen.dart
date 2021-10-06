@@ -95,7 +95,7 @@ class AdminSystemScreen extends StatelessWidget {
                                 ),
                                 color: (cubit.currentIndex == index)?defaultColor: Colors.grey[300] ,
                                 child: defaultTextButton(
-                                    text: "Field ${index+1}",
+                                    text: "ملعب ${index+1}",
                                     function: () {
                                       cubit.currentIndex = index;
                                       cubit.changeField();
@@ -268,7 +268,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                               Row(
                                                                 mainAxisAlignment:MainAxisAlignment.center,
                                                                 children: [
-                                                                  Text("$day ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
+                                                                  Text("${cubit.dayInArabic(day:day)} ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
                                                                   const SizedBox(width:10),
                                                                   Text('from: $strFrom to: $strTo'),
                                                                 ],
@@ -285,7 +285,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                           Text('${cubit.startTimes[index]["userName"]}'),
                                                                           Text('${cubit.startTimes[index]["userPhone"]}'),
                                                                           Text('${cubit.startTimes[index]["randomNumber"]}'),
-                                                                          Text(DateFormat.yMMMd().format(DateTime.parse(dateController.text))),
+                                                                          Text(DateFormat.yMMMd().format(DateTime.parse(cubit.startTimes[index]["bookingDate"]))),
                                                                         ],
                                                                       ),
                                                                       const Spacer(),
@@ -300,17 +300,18 @@ class AdminSystemScreen extends StatelessWidget {
                                                                               },
                                                                               child: Row(
                                                                                 children: const [
+                                                                                  Text(
+                                                                                    'قم بالاتصال',
+                                                                                    style: TextStyle(
+                                                                                        color: Colors.white,
+                                                                                        fontSize: 12),
+                                                                                  ),
+                                                                                  SizedBox(width:5),
                                                                                   Icon(
                                                                                     Icons.call,
                                                                                     color: Colors.white,
                                                                                     size: 12,
                                                                                   ),
-                                                                                  Text(
-                                                                                    'Contact',
-                                                                                    style: TextStyle(
-                                                                                        color: Colors.white,
-                                                                                        fontSize: 12),
-                                                                                  )
                                                                                 ],
                                                                               ),
                                                                             ),
@@ -330,7 +331,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                             context: context,
                                                                                           content:Column(
                                                                                             children: [
-                                                                                              const Text("Are you sure you want to cancel?"),
+                                                                                              const Text("هل انت متأكد من إلغاء هذا الحجز؟"),
                                                                                               const SizedBox(height:10),
                                                                                               Container(
                                                                                                 height:40,
@@ -357,7 +358,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                                     Navigator.pop(context);
                                                                                                   },
                                                                                                   child: const Text(
-                                                                                                    "Cancel",
+                                                                                                    "إلغاء",
                                                                                                     style: TextStyle(
                                                                                                       color: Colors.white
                                                                                                     ),
@@ -374,7 +375,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                       child: Row(
                                                                                         children: const [
                                                                                           Text(
-                                                                                            'Cancel',
+                                                                                            'إلغاء',
                                                                                             style: TextStyle(
                                                                                                 color: Colors.white,
                                                                                                 fontSize: 12
@@ -401,7 +402,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                             context: context,
                                                                                             content:Column(
                                                                                               children: [
-                                                                                                const Text(""),
+                                                                                                const Text("تم الدفع؟"),
                                                                                                 const SizedBox(height:10),
                                                                                                 Container(
                                                                                                   height:40,
@@ -421,7 +422,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                                       Navigator.pop(context);
                                                                                                     },
                                                                                                     child: const Text(
-                                                                                                      "Ok",
+                                                                                                      "موافق",
                                                                                                       style: TextStyle(
                                                                                                           color: Colors.white
                                                                                                       ),
@@ -438,7 +439,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                       child: Row(
                                                                                         children: const [
                                                                                           Text(
-                                                                                            'Pay',
+                                                                                            'تم الدفع؟',
                                                                                             style: TextStyle(
                                                                                                 color: Colors.white,
                                                                                                 fontSize: 12
@@ -459,7 +460,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                             context: context,
                                                                                             content:Column(
                                                                                               children: [
-                                                                                                const Text("Are you sure you want to cancel?"),
+                                                                                                const Text("هل انت متأكد من إلغاء هذا الحجز؟"),
                                                                                                 const SizedBox(height:10),
                                                                                                 Container(
                                                                                                   height:40,
@@ -505,7 +506,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                                       Navigator.pop(context);
                                                                                                     },
                                                                                                     child: const Text(
-                                                                                                      "Cancel",
+                                                                                                      "إلغاء",
                                                                                                       style: TextStyle(
                                                                                                           color: Colors.white
                                                                                                       ),
@@ -522,7 +523,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                       child: Row(
                                                                                         children: const [
                                                                                           Text(
-                                                                                            'Cancel',
+                                                                                            'إلغاء',
                                                                                             style: TextStyle(
                                                                                                 color: Colors.white,
                                                                                                 fontSize: 12),
@@ -549,8 +550,8 @@ class AdminSystemScreen extends StatelessWidget {
                                                                         children: [
                                                                           Column(
                                                                             crossAxisAlignment: CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              Text('Not Booked')
+                                                                            children: const [
+                                                                              Text('غير محجوز')
                                                                             ],
                                                                           ),
 
@@ -561,8 +562,8 @@ class AdminSystemScreen extends StatelessWidget {
                                                                       children: [
                                                                         Column(
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            Text('Not Booked & Done')
+                                                                          children: const [
+                                                                            Text('غير محجوز و انتهي')
                                                                           ],
                                                                         ),
 
@@ -672,7 +673,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: const [
                                                     Text(
-                                                      'Book',
+                                                      'احجز',
                                                       style: TextStyle(
                                                           color: Colors.white,
                                                           fontSize: 17
@@ -685,7 +686,7 @@ class AdminSystemScreen extends StatelessWidget {
                                           ],
                                         );
                                       },
-                                      fallback: (context)=>Text("No reservations on $day ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
+                                      fallback: (context)=>Text("No reservations on ${cubit.dayInArabic(day:day)} ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
                                     );
                                   },
                                   fallback: (context)=>Container(),
