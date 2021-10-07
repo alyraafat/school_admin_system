@@ -238,13 +238,13 @@ String formatTime({
 }) {
   String strNum = "";
   if (num > 12) {
-    strNum = "${num - 12} pm";
+    strNum = "${num - 12} مساء ";
   } else if (num == 0) {
-    strNum = "12 am";
+    strNum = "12 صباحا";
   } else if (num == 12) {
-    strNum = "12 pm";
+    strNum = "12 مساء";
   } else {
-    strNum = "$num am";
+    strNum = "$num صباحا ";
   }
   return strNum;
 }

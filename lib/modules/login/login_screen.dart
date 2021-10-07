@@ -78,7 +78,6 @@ class LoginScreen extends StatelessWidget
                         height: 30.0,
                       ),
                       defaultFormField(
-                        textDirection: TextDirection.ltr,
                         controller: emailController,
                         validate: (value){
                           if(value!.isEmpty) return ('لا يجب أن يكون البريد الإلكتروني فارغًا');
@@ -91,7 +90,6 @@ class LoginScreen extends StatelessWidget
                         height: 15.0,
                       ),
                       defaultFormField(
-                          textDirection: TextDirection.ltr,
                           controller: passwordController,
                           validate: (value){
                             if(value!.isEmpty) return ('يجب ألا تكون كلمة المرور فارغة');

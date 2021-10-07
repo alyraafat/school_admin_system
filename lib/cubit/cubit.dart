@@ -81,13 +81,14 @@ class AppCubit extends Cubit<AppStates> {
         .collection("schools")
         .doc(schoolId)
         .snapshots()
-        .listen((value) {
-      oneSchool = value.data()!;
+        .listen((event) {
+          oneSchool = event.data()!;
       emit(AppGetOneSchoolSuccessState());
-    // }).catchError((error){
+    });
+    //     .catchError((error){
     //   print(error.toString());
     //   emit(AppGetOneSchoolErrorState(error));
-    });
+    // });
   }
 
   int compareDates({

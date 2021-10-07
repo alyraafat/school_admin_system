@@ -249,10 +249,8 @@ class AdminSystemScreen extends StatelessWidget {
                                             const NeverScrollableScrollPhysics(),
                                         shrinkWrap: true,
                                         itemBuilder: (context, index) {
-                                          int from =
-                                              cubit.startTimes[index]["from"];
-                                          int to =
-                                              cubit.startTimes[index]["to"];
+                                          int from = cubit.startTimes[index]["from"];
+                                          int to = cubit.startTimes[index]["to"];
                                           String strFrom = formatTime(num: from);
                                           String strTo = formatTime(num: to);
                                           return Padding(
