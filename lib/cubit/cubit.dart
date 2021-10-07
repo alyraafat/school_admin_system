@@ -351,7 +351,7 @@ class AppCubit extends Cubit<AppStates> {
                       "isDone": true
                     });
               }
-            }else if(compareDates(date1:date,date2:DateFormat("yyyy-MM-dd").format(DateTime.now()))==-1&&!startTime.data()["isDone"]){
+            }else if(compareDates(date1:date,date2:DateFormat("yyyy-MM-dd").format(DateTime.now()))==-1){
               if(!startTime.data()["isDone"]){
                 updateBookingTimeModel(
                     cityId: cityId,
