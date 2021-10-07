@@ -188,43 +188,47 @@ Widget defaultFormField({
   TextInputType? keyboardType,
   String? Function(String?)? validate,
   void Function()? suffixOnPressed,
-  bool isObscure = false
+  bool isObscure = false,
+  TextDirection textDirection = TextDirection.rtl
 
 }) => Container(
   decoration: BoxDecoration(
-    // border: Border(
-    //   bottom: BorderSide(width: 1, color:Color(0xff388E3C)),
-    // ),
+    border: Border(
+      bottom: BorderSide(width: 1, color:Color(0xff388E3C)),
+    ),
     color: Colors.white,
   ),
-  child: TextFormField(
-    keyboardType: keyboardType,
-    controller: controller,
-    obscureText: isObscure,
-    onChanged: onChange,
-    onTap: onTap ,
-    validator: validate,
-    decoration: InputDecoration(
-        focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Color(0xff388E3C),
-            )
-        ),
-        prefixIcon: Icon(
-          prefix,
-          color: Color(0xff388E3C),
-        ),
-        suffixIcon: IconButton(
-          icon: Icon(
-            suffix,
+  child: Directionality(
+    textDirection: textDirection,
+    child: TextFormField(
+      keyboardType: keyboardType,
+      controller: controller,
+      obscureText: isObscure,
+      onChanged: onChange,
+      onTap: onTap ,
+      validator: validate,
+      decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Color(0xff388E3C),
+              )
+          ),
+          prefixIcon: Icon(
+            prefix,
             color: Color(0xff388E3C),
           ),
-          onPressed: suffixOnPressed,
-        ),
-        labelText: text,
-        labelStyle: TextStyle(
-            color: Color(0xff388E3C)
-        )
+          suffixIcon: IconButton(
+            icon: Icon(
+              suffix,
+              color: Color(0xff388E3C),
+            ),
+            onPressed: suffixOnPressed,
+          ),
+          labelText: text,
+          labelStyle: TextStyle(
+              color: Color(0xff388E3C)
+          )
+      ),
     ),
   ),
 );

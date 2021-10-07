@@ -22,18 +22,33 @@ class AdminSystemScreen extends StatelessWidget {
   var formKey = GlobalKey<FormState>();
   String day = "";
   var count = 0;
-
   @override
   Widget build(BuildContext context) {
+    dateController.text = DateFormat("yyyy-MM-dd").format(DateTime.now());
+    day = AppCubit.get(context).dateToDay(date: DateTime.now().toString());
     AppCubit cubit = AppCubit.get(context);
-    return BlocConsumer<AppCubit, AppStates>(listener: (context, state) {
-      if (state is AppGetAdminSuccessState) {
-        cubit.getOneSchoolData(
-            cityId: AppCubit.get(context).adminModel["cityId"],
-            schoolId: AppCubit.get(context).adminModel["schoolId"]);
-      }
-    }, builder: (context, state) {
-      return Scaffold(
+    return BlocConsumer<AppCubit, AppStates>(
+        listener: (context, state) {
+          if (state is AppGetAdminSuccessState) {
+            cubit.getOneSchoolData(
+                cityId: AppCubit.get(context).adminModel["cityId"],
+                schoolId: AppCubit.get(context).adminModel["schoolId"]
+            );
+          }
+          if(state is AppGetOneSchoolSuccessState){
+            cubit.checkDateInDataBase(
+                date: dateController.text,
+                cityId: cubit.adminModel["cityId"],
+                schoolId: cubit.adminModel["schoolId"],
+                field: (cubit.currentIndex + 1).toString(),
+                fees: cubit.oneSchool["fees"],
+                intervals: cubit.oneSchool["calendar${cubit.currentIndex + 1}"][day]
+            );
+
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
@@ -96,28 +111,19 @@ class AdminSystemScreen extends StatelessWidget {
                                     ? defaultColor
                                     : Colors.grey[300],
                                 child: defaultTextButton(
-                                  text: " ${index + 1} ملعب ",
+                                  text: " ملعب ${index + 1}",
                                   function: () {
                                     cubit.currentIndex = index;
                                     cubit.changeField();
                                     if (dateController.text.isNotEmpty) {
-                                      if (cubit
-                                              .oneSchool[
-                                                  "calendar${cubit.currentIndex + 1}"]
-                                                  [day]
-                                              .length !=
-                                          1) {
+                                      if (cubit.oneSchool["calendar${cubit.currentIndex + 1}"][day].length != 1) {
                                         AppCubit.get(context).checkDateInDataBase(
                                             date: dateController.text,
                                             cityId: cubit.adminModel["cityId"],
-                                            schoolId:
-                                                cubit.adminModel["schoolId"],
-                                            field: (cubit.currentIndex + 1)
-                                                .toString(),
+                                            schoolId: cubit.adminModel["schoolId"],
+                                            field: (cubit.currentIndex + 1).toString(),
                                             fees: cubit.oneSchool["fees"],
-                                            intervals: cubit.oneSchool[
-                                                    "calendar${cubit.currentIndex + 1}"]
-                                                [day]);
+                                            intervals: cubit.oneSchool["calendar${cubit.currentIndex + 1}"][day]);
                                       }
                                     }
                                   },
@@ -129,9 +135,7 @@ class AdminSystemScreen extends StatelessWidget {
                           separatorBuilder: (context, index) => const SizedBox(
                                 width: 10,
                               ),
-                          itemCount: cubit.oneSchool["fields"] == null
-                              ? 0
-                              : cubit.oneSchool["fields"]),
+                          itemCount: cubit.oneSchool["fields"] == null ? 0 : cubit.oneSchool["fields"]),
                     ),
                     const SizedBox(height: 15),
                     defaultFormField(
@@ -139,17 +143,8 @@ class AdminSystemScreen extends StatelessWidget {
                         prefix: Icons.date_range,
                         text: 'اختر التاريخ',
                         onTap: () {
-                          // showDatePicker(
-                          //   context: context,
-                          //   initialDate: DateTime.now(),
-                          //   firstDate: DateTime.now(),
-                          //   lastDate: DateTime.parse('2030-05-03'),
-                          // ).then((value) {
-                          //   dateController.text =
-                          //       DateFormat.yMMMd().format(value!);
                           showRoundedDatePicker(
-                              firstDate:
-                                  AppCubit.get(context).createFirstDate(),
+                              firstDate: AppCubit.get(context).createFirstDate(),
                               lastDate: AppCubit.get(context).createLastDate(),
                               context: context,
                               theme: ThemeData(
@@ -176,8 +171,8 @@ class AdminSystemScreen extends StatelessWidget {
                                     fontSize: 32,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold),
-                                textStyleDayOnCalendarDisabled: const TextStyle(
-                                    fontSize: 28, color: Colors.black),
+                                textStyleDayOnCalendarDisabled: TextStyle(
+                                    fontSize: 28, color: Colors.grey[500]),
                                 textStyleMonthYearHeader: const TextStyle(
                                     fontSize: 32,
                                     color: Colors.black,
@@ -219,30 +214,21 @@ class AdminSystemScreen extends StatelessWidget {
                                 heightYearRow: 100,
                                 backgroundPicker: Colors.black,
                               )).then((value) {
-                            day = AppCubit.get(context)
-                                .dateToDay(date: value.toString());
-                            dateController.text =
-                                DateFormat("yyyy-MM-dd").format(value!);
-                            if (cubit
-                                    .oneSchool[
-                                        "calendar${cubit.currentIndex + 1}"]
-                                        [day]
-                                    .length !=
-                                1) {
+                            day = AppCubit.get(context).dateToDay(date: value.toString());
+                            dateController.text = DateFormat("yyyy-MM-dd").format(value!);
+                            if (cubit.oneSchool["calendar${cubit.currentIndex + 1}"][day].length != 1) {
                               AppCubit.get(context).checkDateInDataBase(
                                   date: dateController.text,
                                   cityId: cubit.adminModel["cityId"],
                                   schoolId: cubit.adminModel["schoolId"],
                                   field: (cubit.currentIndex + 1).toString(),
                                   fees: cubit.oneSchool["fees"],
-                                  intervals: cubit.oneSchool[
-                                          "calendar${cubit.currentIndex + 1}"]
-                                      [day]);
+                                  intervals: cubit.oneSchool["calendar${cubit.currentIndex + 1}"][day]);
                             }
                             AppCubit.get(context).changeDate();
                           });
                         }),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Container(
                       color: Colors.white,
                       child: Padding(
@@ -251,12 +237,7 @@ class AdminSystemScreen extends StatelessWidget {
                           condition: dateController.text.isNotEmpty,
                           builder: (context) {
                             return ConditionalBuilder(
-                              condition: cubit
-                                      .oneSchool[
-                                          "calendar${cubit.currentIndex + 1}"]
-                                          [day]
-                                      .length !=
-                                  1,
+                              condition: cubit.oneSchool["calendar${cubit.currentIndex + 1}"][day].length != 1,
                               builder: (context) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -273,19 +254,14 @@ class AdminSystemScreen extends StatelessWidget {
                                               cubit.startTimes[index]["from"];
                                           int to =
                                               cubit.startTimes[index]["to"];
-                                          String strFrom =
-                                              formatTime(num: from);
+                                          String strFrom = formatTime(num: from);
                                           String strTo = formatTime(num: to);
                                           return Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: InkWell(
                                               onTap: () {
-                                                if (!cubit.startTimes[index]
-                                                        ["isBooked"] &&
-                                                    !cubit.startTimes[index]
-                                                        ["isDone"]) {
-                                                  cubit.selected[index] =
-                                                      !cubit.selected[index];
+                                                if (!cubit.startTimes[index]["isBooked"] && !cubit.startTimes[index]["isDone"]) {
+                                                  cubit.selected[index] = !cubit.selected[index];
                                                   if (cubit.selected[index]) {
                                                     count++;
                                                   } else {
@@ -297,11 +273,7 @@ class AdminSystemScreen extends StatelessWidget {
                                               child: Container(
                                                 color: cubit.selected[index]
                                                     ? defaultColor
-                                                    : (cubit.startTimes[index]
-                                                                ["isDeposit"] &&
-                                                            !cubit.startTimes[
-                                                                    index]
-                                                                ["depositPaid"])
+                                                    : (cubit.startTimes[index]["isDeposit"] && !cubit.startTimes[index]["depositPaid"])
                                                         ? Colors.grey[300]
                                                         : Colors.white,
                                                 child: Padding(
@@ -310,41 +282,23 @@ class AdminSystemScreen extends StatelessWidget {
                                                   child: Column(
                                                     children: [
                                                       Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
-                                                          Text(
-                                                              '$strTo' ),
-                                                          const SizedBox(
-                                                              width: 5),
-
-                                                          Text('الى' ),
-                                                          const SizedBox(
-                                                              width: 5),
-
-                                                          Text( strFrom ),
-                                                          const SizedBox(
-                                                              width: 5),
-
-                                                          Text('من' ),
-
-
+                                                          Text("${cubit.dayInArabic(day: day)} ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
                                                           const SizedBox(width: 10),
-
-                                                          Text(
-                                                              "${DateFormat.yMMMd().format(DateTime.parse(dateController.text))} ${cubit.dayInArabic(day: day)} "),
+                                                          const Text('من:' ),
+                                                          const SizedBox(width: 5),
+                                                          Text(strFrom),
+                                                          const SizedBox(width: 5),
+                                                          const Text('الى:' ),
+                                                          const SizedBox(width: 5),
+                                                          Text(strTo),
                                                         ],
                                                       ),
                                                       const SizedBox(
                                                           height: 10),
                                                       ConditionalBuilder(
-                                                          condition:
-                                                              cubit.startTimes[
-                                                                          index]
-                                                                      [
-                                                                      "userId"] !=
-                                                                  "",
+                                                          condition: cubit.startTimes[index]["userId"] != "",
                                                           builder: (context) {
                                                             return Row(
                                                               children: [
@@ -578,11 +532,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                           },
                                                           fallback: (context) {
                                                             return ConditionalBuilder(
-                                                              condition:
-                                                                  !cubit.startTimes[
-                                                                          index]
-                                                                      [
-                                                                      "isDone"],
+                                                              condition: !cubit.startTimes[index]["isDone"],
                                                               builder:
                                                                   (context) =>
                                                                       Row(
@@ -595,8 +545,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                         CrossAxisAlignment
                                                                             .start,
                                                                     children: const [
-                                                                      Text(
-                                                                          'غير محجوز')
+                                                                      Text('غير محجوز')
                                                                     ],
                                                                   ),
                                                                 ],
@@ -609,12 +558,9 @@ class AdminSystemScreen extends StatelessWidget {
                                                                         .center,
                                                                 children: [
                                                                   Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                                     children: const [
-                                                                      Text(
-                                                                          'غير محجوز و انتهي')
+                                                                      Text('غير محجوز و انتهي')
                                                                     ],
                                                                   ),
                                                                 ],
@@ -647,11 +593,9 @@ class AdminSystemScreen extends StatelessWidget {
                                                 child: Column(
                                                   children: [
                                                     defaultFormField(
-                                                        prefix: Icons
-                                                            .people_alt_outlined,
+                                                        prefix: Icons.people_alt_outlined,
                                                         text: 'اسم العميل',
-                                                        controller:
-                                                            nameController,
+                                                        controller: nameController,
                                                         validate: (value) {
                                                           if (value!.isEmpty) {
                                                             return "يجب ألا يكون الاسم فارغًا";
@@ -681,70 +625,34 @@ class AdminSystemScreen extends StatelessWidget {
                                                           text: 'احجز',
                                                           function: () {
                                                             var from = [];
-                                                            for (int i = 0;
-                                                                i <
-                                                                    cubit
-                                                                        .selected
-                                                                        .length;
-                                                                i++) {
-                                                              if (cubit
-                                                                      .selected[
-                                                                  i]) {
-                                                                from.add(cubit
-                                                                        .startTimes[
-                                                                    i]["from"]);
+                                                            for (int i = 0; i < cubit.selected.length; i++) {
+                                                              if (cubit.selected[i]) {
+                                                                from.add(cubit.startTimes[i]["from"]);
                                                               }
                                                             }
-                                                            if (formKey
-                                                                .currentState!
-                                                                .validate()) {
-                                                              for (int j = 0;
-                                                                  j < from.length;
-                                                                  j++) {
+                                                            if (formKey.currentState!.validate()) {
+                                                              for (int j = 0; j < from.length; j++) {
                                                                 cubit.updateBookingTimeModel(
-                                                                    cityId: cubit.adminModel[
-                                                                        "cityId"],
-                                                                    schoolId: cubit
-                                                                            .adminModel[
-                                                                        "schoolId"],
-                                                                    date: dateController
-                                                                        .text,
-                                                                    field: (cubit.currentIndex +
-                                                                            1)
-                                                                        .toString(),
-                                                                    from: from[
-                                                                            j]
-                                                                        .toString(),
+                                                                    cityId: cubit.adminModel["cityId"],
+                                                                    schoolId: cubit.adminModel["schoolId"],
+                                                                    date: dateController.text,
+                                                                    field: (cubit.currentIndex + 1).toString(),
+                                                                    from: from[j].toString(),
                                                                     data: {
-                                                                      "isBooked":
-                                                                          true,
-                                                                      "userId":
-                                                                          "booked by admin",
-                                                                      "userName":
-                                                                          nameController
-                                                                              .text,
-                                                                      "userPhone":
-                                                                          phoneController
-                                                                              .text,
-                                                                      "randomNumber":
-                                                                          "No random number",
-                                                                      "isDeposit":
-                                                                          false,
-                                                                      "depositPaid":
-                                                                          false,
-                                                                      "bookingDate": DateFormat(
-                                                                              "yyyy-MM-dd")
-                                                                          .format(
-                                                                              DateTime.now())
+                                                                      "isBooked": true,
+                                                                      "userId": "booked by admin",
+                                                                      "userName": nameController.text,
+                                                                      "userPhone": phoneController.text,
+                                                                      "randomNumber": "No random number",
+                                                                      "isDeposit": false,
+                                                                      "depositPaid": false,
+                                                                      "bookingDate": DateFormat("yyyy-MM-dd").format(DateTime.now())
                                                                     });
                                                               }
                                                               showToast(
-                                                                  text:
-                                                                      "لقد حجزت بنجاح",
-                                                                  state: ToastStates
-                                                                      .SUCCESS);
-                                                              Navigator.pop(
-                                                                  context);
+                                                                  text: "لقد حجزت بنجاح",
+                                                                  state: ToastStates.SUCCESS);
+                                                              Navigator.pop(context);
                                                             }
                                                           }),
                                                     )
@@ -773,16 +681,16 @@ class AdminSystemScreen extends StatelessWidget {
                                 );
                               },
                               fallback: (context) => Text(
-                                  "${cubit.dayInArabic(day: day)} ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))} لا يوجد حجوزات على "),
+                                  "لا يوجد حجوزات يوم ${cubit.dayInArabic(day: day)} ${DateFormat.yMMMd().format(DateTime.parse(dateController.text))}"),
                             );
                           },
                           fallback: (context) => Container(),
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Text(
-                      "المبلغ المستحقك ${cubit.oneSchool["amountDue"]}  جنيه",
+                      "المبلغ المستحق ${cubit.oneSchool["amountDue"]}  جنيه",
                       style: TextStyle(color: Colors.grey[600], fontSize: 15),
                     )
                   ],
@@ -796,6 +704,6 @@ class AdminSystemScreen extends StatelessWidget {
           )),
         ),
       );
-    });
+        });
   }
 }

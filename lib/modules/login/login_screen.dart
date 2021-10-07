@@ -40,7 +40,10 @@ class LoginScreen extends StatelessWidget
           {
             navigateAndFinish(
               context,
-              AdminSystemScreen(),
+              Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: AdminSystemScreen()
+              ),
             );
           }
           );
@@ -62,14 +65,20 @@ class LoginScreen extends StatelessWidget
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                          'تسجيل الدخول',
-                          style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.black, fontSize: 40)
+                      Row(
+                        children: [
+                          const Spacer(),
+                          Text(
+                              'تسجيل الدخول',
+                              style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.black, fontSize: 40)
+                          ),
+                        ],
                       ),
                       const SizedBox(
                         height: 30.0,
                       ),
                       defaultFormField(
+                        textDirection: TextDirection.ltr,
                         controller: emailController,
                         validate: (value){
                           if(value!.isEmpty) return ('لا يجب أن يكون البريد الإلكتروني فارغًا');
@@ -82,6 +91,7 @@ class LoginScreen extends StatelessWidget
                         height: 15.0,
                       ),
                       defaultFormField(
+                          textDirection: TextDirection.ltr,
                           controller: passwordController,
                           validate: (value){
                             if(value!.isEmpty) return ('يجب ألا تكون كلمة المرور فارغة');
@@ -113,8 +123,9 @@ class LoginScreen extends StatelessWidget
                               }
                             }
                         ),
-                        fallback: (context) =>
-                            const Center(child: CircularProgressIndicator()),
+                        fallback: (context) => Center(child: CircularProgressIndicator(
+                              color:defaultColor
+                            )),
                       ),
                     ],
                   ),

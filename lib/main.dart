@@ -23,7 +23,10 @@ void main() async {
   Widget startWidget;
   adminId = CacheHelper.getData(key: 'adminId');
   if (adminId!=""&&adminId!=null) {
-    startWidget = AdminSystemScreen();
+    startWidget = Directionality(
+      textDirection: TextDirection.rtl,
+        child: AdminSystemScreen()
+    );
   } else {
     startWidget = LoginScreen();
   }
@@ -57,11 +60,7 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: Directionality(
-              textDirection: TextDirection.rtl,
-              child: startWidget,
-
-            )
+            home: startWidget
           );
         },
       ),

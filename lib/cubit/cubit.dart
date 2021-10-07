@@ -339,7 +339,7 @@ class AppCubit extends Cubit<AppStates> {
           selected = [];
           event.docs.forEach((startTime){
             if(compareDates(date1:date,date2:DateFormat("yyyy-MM-dd").format(DateTime.now()))==0){
-              if(TimeOfDay.now().hour>=startTime.data()["from"]){
+              if(TimeOfDay.now().hour>=startTime.data()["from"]&&!startTime.data()["isDone"]){
                 updateBookingTimeModel(
                     cityId: cityId,
                     schoolId: schoolId,
@@ -350,7 +350,7 @@ class AppCubit extends Cubit<AppStates> {
                       "isDone": true
                     });
               }
-            }else if(compareDates(date1:date,date2:DateFormat("yyyy-MM-dd").format(DateTime.now()))==-1){
+            }else if(compareDates(date1:date,date2:DateFormat("yyyy-MM-dd").format(DateTime.now()))==-1&&!startTime.data()["isDone"]){
               if(!startTime.data()["isDone"]){
                 updateBookingTimeModel(
                     cityId: cityId,
