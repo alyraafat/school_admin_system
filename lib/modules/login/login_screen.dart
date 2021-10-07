@@ -63,7 +63,7 @@ class LoginScreen extends StatelessWidget
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                          'LOGIN',
+                          'تسجيل الدخول',
                           style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.black, fontSize: 40)
                       ),
                       const SizedBox(
@@ -72,9 +72,9 @@ class LoginScreen extends StatelessWidget
                       defaultFormField(
                         controller: emailController,
                         validate: (value){
-                          if(value!.isEmpty) return ('Email shouldn\'t be empty');
+                          if(value!.isEmpty) return ('لا يجب أن يكون البريد الإلكتروني فارغًا');
                         },
-                        text: 'Email Address',
+                        text: 'البريد الإلكتروني',
                         prefix: Icons.email_outlined,
                         keyboardType: TextInputType.emailAddress
                       ),
@@ -84,10 +84,10 @@ class LoginScreen extends StatelessWidget
                       defaultFormField(
                           controller: passwordController,
                           validate: (value){
-                            if(value!.isEmpty) return ('Password shouldn\'t be empty');
+                            if(value!.isEmpty) return ('يجب ألا تكون كلمة المرور فارغة');
                           },
                           isObscure: LoginCubit.get(context).isPassword,
-                          text: 'Password',
+                          text: 'كلمه السر',
                           prefix: Icons.lock_outline,
                           suffix: LoginCubit.get(context).suffix,
                           suffixOnPressed: () {
@@ -100,7 +100,7 @@ class LoginScreen extends StatelessWidget
                       ConditionalBuilder(
                         condition: state is! LoginLoadingState,
                         builder: (context) => defaultButton(
-                            text: 'login',
+                            text: 'تسجيل الدخول',
                             background: defaultColor,
                             isUpperCase: true,
                             onPressed: () {
@@ -114,7 +114,7 @@ class LoginScreen extends StatelessWidget
                             }
                         ),
                         fallback: (context) =>
-                            Center(child: CircularProgressIndicator()),
+                            const Center(child: CircularProgressIndicator()),
                       ),
                     ],
                   ),
