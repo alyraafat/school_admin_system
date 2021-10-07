@@ -80,13 +80,13 @@ class AppCubit extends Cubit<AppStates> {
         .doc(cityId)
         .collection("schools")
         .doc(schoolId)
-        .get()
-        .then((value) {
+        .snapshots()
+        .listen((value) {
       oneSchool = value.data()!;
       emit(AppGetOneSchoolSuccessState());
-    }).catchError((error){
-      print(error.toString());
-      emit(AppGetOneSchoolErrorState(error));
+    // }).catchError((error){
+    //   print(error.toString());
+    //   emit(AppGetOneSchoolErrorState(error));
     });
   }
 
