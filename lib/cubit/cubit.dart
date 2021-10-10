@@ -282,7 +282,8 @@ class AppCubit extends Cubit<AppStates> {
         randomNumber: '',
         isDeposit:false,
         bookingDate: "",
-        depositPaid: false
+        depositPaid: false,
+        pay: 0
       );
       emit(AppCreateBookingTimeLoadingState());
       FirebaseFirestore.instance

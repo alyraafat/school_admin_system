@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:school_admin_system/shared/constants.dart';
 
 Widget buildSchool(context,school) => Container(
     child: Padding(
@@ -193,9 +194,6 @@ Widget defaultFormField({
 
 }) => Container(
   decoration: BoxDecoration(
-    border: Border(
-      bottom: BorderSide(width: 1, color:Color(0xff388E3C)),
-    ),
     color: Colors.white,
   ),
   child: Directionality(
@@ -209,9 +207,13 @@ Widget defaultFormField({
       validator: validate,
       decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(25),
               borderSide: BorderSide(
-                color: Color(0xff388E3C),
+                color: defaultColor,
               )
+          ),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: defaultColor),
           ),
           prefixIcon: Icon(
             prefix,

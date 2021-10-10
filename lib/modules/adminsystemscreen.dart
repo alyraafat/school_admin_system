@@ -300,33 +300,22 @@ class AdminSystemScreen extends StatelessWidget {
                                                             return Row(
                                                               children: [
                                                                 Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                                   children: [
-                                                                    Text(
-                                                                        '${cubit.startTimes[index]["userName"]}'),
-                                                                    Text(
-                                                                        '${cubit.startTimes[index]["userPhone"]}'),
-                                                                    Text(
-                                                                        '${cubit.startTimes[index]["randomNumber"]}'),
-                                                                    Text(DateFormat
-                                                                            .yMMMd()
-                                                                        .format(DateTime.parse(cubit.startTimes[index]
-                                                                            [
-                                                                            "bookingDate"]))),
+                                                                    Text('${cubit.startTimes[index]["userName"]}'),
+                                                                    Text('${cubit.startTimes[index]["userPhone"]}'),
+                                                                    Text('${cubit.startTimes[index]["randomNumber"]}'),
+                                                                    Text('المجموع: ${cubit.startTimes[index]["pay"]} جنيه '),
+                                                                    Text(DateFormat.yMMMd().format(DateTime.parse(cubit.startTimes[index]["bookingDate"]))),
                                                                   ],
                                                                 ),
                                                                 const Spacer(),
                                                                 Column(
                                                                   children: [
                                                                     Container(
-                                                                      height:
-                                                                          30,
-                                                                      color:
-                                                                          defaultColor,
-                                                                      child:
-                                                                          MaterialButton(
+                                                                      height: 30,
+                                                                      color: defaultColor,
+                                                                      child: MaterialButton(
                                                                         onPressed:
                                                                             () {
                                                                           launch(
@@ -350,11 +339,8 @@ class AdminSystemScreen extends StatelessWidget {
                                                                       ),
                                                                     ),
                                                                     ConditionalBuilder(
-                                                                        condition:
-                                                                            cubit.startTimes[index]["userId"] ==
-                                                                                "booked by admin",
-                                                                        builder:
-                                                                            (context) {
+                                                                        condition: cubit.startTimes[index]["userId"] == "booked by admin",
+                                                                        builder: (context) {
                                                                           return Column(
                                                                             children: [
                                                                               const SizedBox(height: 10),
@@ -383,7 +369,8 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                                     "randomNumber": "",
                                                                                                     "isDeposit": false,
                                                                                                     "depositPaid": false,
-                                                                                                    "bookingDate": ""
+                                                                                                    "bookingDate": "",
+                                                                                                    "pay": 0
                                                                                                   });
                                                                                                   Navigator.pop(context);
                                                                                                 },
@@ -483,16 +470,20 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                                         "randomNumber": "",
                                                                                                         "isDeposit": false,
                                                                                                         "depositPaid": false,
-                                                                                                        "bookingDate": ""
+                                                                                                        "bookingDate": "",
+                                                                                                        "pay": 0
                                                                                                       });
                                                                                                       for (int i = 0; i < cubit.userModel["mala3eb"].length; i++) {
                                                                                                         if (cubit.adminModel["schoolId"] == cubit.userModel["mala3eb"][i]["schoolId"] && cubit.adminModel["cityId"] == cubit.userModel["mala3eb"][i]["city"] && dateController.text == cubit.userModel["mala3eb"][i]["date"]) {
                                                                                                           cubit.userModel["mala3eb"].removeAt(i);
                                                                                                           cubit.userModel["count"]--;
-                                                                                                          cubit.updateUserData(data: {
-                                                                                                            "mala3eb": cubit.userModel["mala3eb"],
-                                                                                                            "count": cubit.userModel["count"]
-                                                                                                          }, uId: cubit.startTimes[index]["userId"]);
+                                                                                                          cubit.updateUserData(
+                                                                                                              data: {
+                                                                                                                "mala3eb": cubit.userModel["mala3eb"],
+                                                                                                                "count": cubit.userModel["count"]
+                                                                                                              },
+                                                                                                              uId: cubit.startTimes[index]["userId"]
+                                                                                                          );
                                                                                                           break;
                                                                                                         }
                                                                                                       }
@@ -530,12 +521,9 @@ class AdminSystemScreen extends StatelessWidget {
                                                           fallback: (context) {
                                                             return ConditionalBuilder(
                                                               condition: !cubit.startTimes[index]["isDone"],
-                                                              builder:
-                                                                  (context) =>
+                                                              builder: (context) =>
                                                                       Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
+                                                                mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
                                                                   Column(
                                                                     crossAxisAlignment:
@@ -550,9 +538,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                               fallback:
                                                                   (context) =>
                                                                       Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
+                                                                mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
                                                                   Column(
                                                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -640,15 +626,17 @@ class AdminSystemScreen extends StatelessWidget {
                                                                       "userId": "booked by admin",
                                                                       "userName": nameController.text,
                                                                       "userPhone": phoneController.text,
-                                                                      "randomNumber": "No random number",
+                                                                      "randomNumber": "لا يوجد رقم عشوائي",
                                                                       "isDeposit": false,
                                                                       "depositPaid": false,
-                                                                      "bookingDate": DateFormat("yyyy-MM-dd").format(DateTime.now())
+                                                                      "bookingDate": DateFormat("yyyy-MM-dd").format(DateTime.now()),
+                                                                      "pay": cubit.oneSchool["fees"]
                                                                     });
                                                               }
                                                               showToast(
                                                                   text: "لقد حجزت بنجاح",
-                                                                  state: ToastStates.SUCCESS);
+                                                                  state: ToastStates.SUCCESS
+                                                              );
                                                               Navigator.pop(context);
                                                             }
                                                           }),
