@@ -306,7 +306,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                     Text('${cubit.startTimes[index]["userPhone"]}'),
                                                                     Text('${cubit.startTimes[index]["randomNumber"]}'),
                                                                     Text('المجموع: ${cubit.startTimes[index]["pay"]} جنيه '),
-                                                                    Text(DateFormat.yMMMd().format(DateTime.parse(cubit.startTimes[index]["bookingDate"]))),
+                                                                    Text("يوم الحجز: ${DateFormat.yMMMd().format(DateTime.parse(cubit.startTimes[index]["bookingDate"]))}"),
                                                                   ],
                                                                 ),
                                                                 const Spacer(),
@@ -420,7 +420,15 @@ class AdminSystemScreen extends StatelessWidget {
                                                                                                   color: defaultColor,
                                                                                                   child: MaterialButton(
                                                                                                     onPressed: () {
-                                                                                                      cubit.updateBookingTimeModel(cityId: cubit.adminModel["cityId"], schoolId: cubit.adminModel["schoolId"], date: dateController.text, field: (cubit.currentIndex + 1).toString(), from: cubit.startTimes[index]["from"].toString(), data: {"depositPaid": true});
+                                                                                                      cubit.updateBookingTimeModel(
+                                                                                                          cityId: cubit.adminModel["cityId"],
+                                                                                                          schoolId: cubit.adminModel["schoolId"],
+                                                                                                          date: dateController.text,
+                                                                                                          field: (cubit.currentIndex + 1).toString(),
+                                                                                                          from: cubit.startTimes[index]["from"].toString(),
+                                                                                                          data: {
+                                                                                                            "depositPaid": true
+                                                                                                          });
                                                                                                       Navigator.pop(context);
                                                                                                     },
                                                                                                     child: const Text(
@@ -521,8 +529,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                           fallback: (context) {
                                                             return ConditionalBuilder(
                                                               condition: !cubit.startTimes[index]["isDone"],
-                                                              builder: (context) =>
-                                                                      Row(
+                                                              builder: (context) => Row(
                                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
                                                                   Column(
