@@ -112,6 +112,7 @@ class AdminSystemScreen extends StatelessWidget {
                                 child: defaultTextButton(
                                   text: " ملعب ${index + 1}",
                                   function: () {
+                                    count = 0;
                                     cubit.currentIndex = index;
                                     cubit.changeField();
                                     if (dateController.text.isNotEmpty) {
@@ -215,6 +216,7 @@ class AdminSystemScreen extends StatelessWidget {
                               )).then((value) {
                             day = AppCubit.get(context).dateToDay(date: value.toString());
                             dateController.text = DateFormat("yyyy-MM-dd").format(value!);
+                            count = 0;
                             if (cubit.oneSchool["calendar${cubit.currentIndex + 1}"][day].length != 1) {
                               AppCubit.get(context).checkDateInDataBase(
                                   date: dateController.text,
@@ -542,9 +544,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                   ),
                                                                 ],
                                                               ),
-                                                              fallback:
-                                                                  (context) =>
-                                                                      Row(
+                                                              fallback: (context) => Row(
                                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                                 children: [
                                                                   Column(
@@ -564,9 +564,9 @@ class AdminSystemScreen extends StatelessWidget {
                                             ),
                                           );
                                         },
-                                        separatorBuilder: (context, index) =>
-                                            myDivider(),
-                                        itemCount: cubit.startTimes.length),
+                                        separatorBuilder: (context, index) => myDivider(),
+                                        itemCount: cubit.startTimes.length
+                                    ),
                                     const SizedBox(height: 15),
                                     Container(
                                       alignment: Alignment.center,
@@ -593,13 +593,10 @@ class AdminSystemScreen extends StatelessWidget {
                                                         }),
                                                     const SizedBox(height: 15),
                                                     defaultFormField(
-                                                        prefix: Icons
-                                                            .phone_android_outlined,
+                                                        prefix: Icons.phone_android_outlined,
                                                         text: 'رقم الموبيل',
-                                                        keyboardType:
-                                                            TextInputType.phone,
-                                                        controller:
-                                                            phoneController,
+                                                        keyboardType: TextInputType.phone,
+                                                        controller: phoneController,
                                                         validate: (value) {
                                                           if (value!.isEmpty) {
                                                             return "يجب ألا يكون الهاتف فارغًا";
@@ -614,36 +611,38 @@ class AdminSystemScreen extends StatelessWidget {
                                                           color: Colors.white,
                                                           text: 'احجز',
                                                           function: () {
-                                                            var from = [];
-                                                            for (int i = 0; i < cubit.selected.length; i++) {
-                                                              if (cubit.selected[i]) {
-                                                                from.add(cubit.startTimes[i]["from"]);
-                                                              }
-                                                            }
                                                             if (formKey.currentState!.validate()) {
+                                                              var from = [];
+                                                              for (int i = 0; i < cubit.selected.length; i++) {
+                                                                if (cubit.selected[i]) {
+                                                                  from.add(cubit.startTimes[i]["from"]);
+                                                                }
+                                                              }
                                                               for (int j = 0; j < from.length; j++) {
-                                                                cubit.updateBookingTimeModel(
-                                                                    cityId: cubit.adminModel["cityId"],
-                                                                    schoolId: cubit.adminModel["schoolId"],
-                                                                    date: dateController.text,
-                                                                    field: (cubit.currentIndex + 1).toString(),
-                                                                    from: from[j].toString(),
-                                                                    data: {
-                                                                      "isBooked": true,
-                                                                      "userId": "booked by admin",
-                                                                      "userName": nameController.text,
-                                                                      "userPhone": phoneController.text,
-                                                                      "randomNumber": "لا يوجد رقم عشوائي",
-                                                                      "isDeposit": false,
-                                                                      "depositPaid": false,
-                                                                      "bookingDate": DateFormat("yyyy-MM-dd").format(DateTime.now()),
-                                                                      "pay": cubit.oneSchool["fees"]
-                                                                    });
+                                                                  cubit.updateBookingTimeModel(
+                                                                      cityId: cubit.adminModel["cityId"],
+                                                                      schoolId: cubit.adminModel["schoolId"],
+                                                                      date: dateController.text,
+                                                                      field: (cubit.currentIndex + 1).toString(),
+                                                                      from: from[j].toString(),
+                                                                      data: {
+                                                                        "isBooked": true,
+                                                                        "userId": "booked by admin",
+                                                                        "userName": nameController.text,
+                                                                        "userPhone": phoneController.text,
+                                                                        "randomNumber": "لا يوجد رقم عشوائي",
+                                                                        "isDeposit": false,
+                                                                        "depositPaid": false,
+                                                                        "bookingDate": DateFormat("yyyy-MM-dd").format(DateTime.now()),
+                                                                        "pay": cubit.oneSchool["fees"]
+                                                                      }
+                                                                  );
                                                               }
                                                               showToast(
-                                                                  text: "لقد حجزت بنجاح",
-                                                                  state: ToastStates.SUCCESS
+                                                                  text: "تأكد من نجاح الحجز من خلال النظر لأعلى في الأوقات التي حجزت فيها",
+                                                                  state: ToastStates.WARNING
                                                               );
+                                                              count = 0;
                                                               Navigator.pop(context);
                                                             }
                                                           }),

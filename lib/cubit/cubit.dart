@@ -235,7 +235,7 @@ class AppCubit extends Cubit<AppStates> {
         .get()
         .then((value) {
       if(value.docs.isNotEmpty) {
-        getBookingTimeModel(
+        getBookingTimeModels(
             cityId: cityId,
             date: date,
             schoolId: schoolId,
@@ -306,7 +306,7 @@ class AppCubit extends Cubit<AppStates> {
         emit(AppCreateBookingTimeErrorState(error));
       });
     });
-    getBookingTimeModel(
+    getBookingTimeModels(
         cityId: cityId,
         field: field,
         schoolId: schoolId,
@@ -315,7 +315,7 @@ class AppCubit extends Cubit<AppStates> {
 
   }
 
-  void getBookingTimeModel({
+  void getBookingTimeModels({
     required String cityId,
     required String schoolId,
     required String date,
@@ -365,9 +365,8 @@ class AppCubit extends Cubit<AppStates> {
                     });
               }
             }
-              startTimes.add(startTime.data());
-              selected.add(false);
-
+            startTimes.add(startTime.data());
+            selected.add(false);
           });
           emit(AppGetBookingTimeSuccessState());
         });
@@ -378,6 +377,36 @@ class AppCubit extends Cubit<AppStates> {
     //   emit(AppGetBookingTimeErrorState(error));
     // }
     // );
+  }
+
+  var bookingTimeModel = {};
+  void getOneBookingTimeModel({
+    required String cityId,
+    required String schoolId,
+    required String date,
+    required String field,
+    required int from,
+  }){
+    emit(AppGetOneBookingTimeLoadingState());
+    FirebaseFirestore.instance
+        .collection("cities")
+        .doc(cityId)
+        .collection("schools")
+        .doc(schoolId)
+        .collection("fields")
+        .doc(field)
+        .collection("bookingDay")
+        .doc(date)
+        .collection("bookingTime")
+        .doc(from.toString())
+        .get()
+        .then((value) {
+      bookingTimeModel = value.data()!;
+      emit(AppGetOneBookingTimeSuccessState());
+    }).catchError((error){
+      print(error.toString());
+      emit(AppGetOneBookingTimeErrorState(error));
+    });
   }
 
   void updateBookingTimeModel({
