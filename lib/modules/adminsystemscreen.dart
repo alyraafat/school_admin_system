@@ -270,11 +270,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                 }
                                               },
                                               child: Container(
-                                                color: cubit.selected[index]
-                                                    ? defaultColor
-                                                    : (cubit.startTimes[index]["isDeposit"] && !cubit.startTimes[index]["depositPaid"])
-                                                        ? Colors.grey[300]
-                                                        : Colors.white,
+                                                color: cubit.selected[index] ? defaultColor : (cubit.startTimes[index]["isDeposit"] && !cubit.startTimes[index]["depositPaid"]) ? Colors.grey[300] : Colors.white,
                                                 child: Padding(
                                                   padding:
                                                       const EdgeInsets.all(8.0),
@@ -536,8 +532,7 @@ class AdminSystemScreen extends StatelessWidget {
                                                                 children: [
                                                                   Column(
                                                                     crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
+                                                                        CrossAxisAlignment.start,
                                                                     children: const [
                                                                       Text('غير محجوز')
                                                                     ],
